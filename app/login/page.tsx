@@ -19,8 +19,13 @@ export default async function LoginPage() {
 
   return (
     <div className="mx-auto max-w-md pt-6 sm:pt-12">
-      <h1 className="font-serif text-3xl text-ink">Welcome to Planti</h1>
-      <p className="mb-6 mt-1.5 text-sm leading-relaxed text-ink-muted">
+      <p className="text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-forest">Planti</p>
+      <h1 className="mt-1 font-serif text-4xl leading-tight text-ink">Less guessing. More growing.</h1>
+      <p className="mt-3 text-sm leading-relaxed text-ink-muted">
+        An intelligent plant-care agent that learns from your plant&apos;s history, combines real-time sensor data with trusted
+        horticultural research, and helps you understand what your plants need.
+      </p>
+      <p className="mb-6 mt-2 text-sm leading-relaxed text-ink-muted">
         Your plants, their readings and their care history are private to your account.
       </p>
       <AuthForm />

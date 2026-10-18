@@ -1,0 +1,700 @@
+{
+  "generatedAt": "2026-10-18T09:36:33.064Z",
+  "evidenceAnchor": "2026-10-18T12:00:00.000Z",
+  "rows": [
+    {
+      "scenario": "gradual_decline",
+      "run": "nvidia/Nemotron-3_5-Lightning (reasoning on)",
+      "calculatedConfidence": "high",
+      "outcome": {
+        "ok": true,
+        "output": {
+          "assessment": "The simulated moisture data for this Monstera deliciosa shows a steady decline from approximately 54.8% to 33.2% over about 72 hours, with the latest reading at 33.2% at 2026-10-18T12:00:00Z. No watering events are recorded in the care history, and the user's preference is to water when the top 3 cm of soil feel dry. The environment is bright indirect light at an east window with a temperature of 23.1°C.",
+          "observed_facts": [
+            "Latest moisture percent is 33.2% at 2026-10-18T12:00:00Z (latest_reading).",
+            "Latest temperature is 23.1°C with adequate sensor status (latest_reading).",
+            "Simulated moisture has declined from 54.8% at 2026-10-16T13:00:00Z to 33.2% at 2026-10-18T12:00:00Z over 71.5 hours (hourly_moisture_last_48h, trend_span_hours).",
+            "Calculated trend is declining at -0.45 percentage points per hour with R² = 0.997 based on 144 readings (calculated.trend, calculated.confidence_reasons).",
+            "All sensor data sources are simulated, not actual measurements (sources).",
+            "User care preference is to water when the top 3 cm of soil feel dry (user_care_preferences).",
+            "No care events are recorded; last_watering_at is null (care_events, calculated)."
+          ],
+          "interpretation": "Interpretation: The consistent downward trend in simulated moisture may indicate gradual drying over the observation period, but because the data are simulated and no physical soil assessment is available, it is uncertain whether the plant currently requires watering. The user's watering preference provides a behavioral guideline, but the simulated readings cannot confirm actual substrate moisture.",
+          "recommended_action": "Physically check the moisture content of the top 3 cm of soil using a finger or moisture meter to determine if watering is needed per the user's preference.",
+          "reasons": [
+            "The evidence provides only simulated moisture data; physical soil condition is unverified.",
+            "The user's care preference is to water when the top 3 cm feel dry, so a direct soil check tests that preference and the relevance of the simulated reading.",
+            "No care events are recorded, so the time since last watering is unknown; a physical check fills this gap."
+          ],
+          "confidence": "medium",
+          "limitations": [
+            "All moisture and temperature readings are simulated, not actual measurements.",
+            "No physical soil assessment or watering history is recorded (last_watering_at null, care_events empty).",
+            "The simulated trend may not reflect the plant's actual water status or soil moisture dynamics.",
+            "Factors such as soil mix drainage, pot size, and environmental variations beyond the sensor are not captured."
+          ],
+          "follow_up_observation": "After the physical soil check, monitor the next simulated moisture reading over the subsequent hours to see if the trend continues, stabilizes, or changes in response to any watering action.",
+          "needs_more_data": true
+        },
+        "confidenceCapped": false,
+        "meta": {
+          "model": "nvidia/Nemotron-3_5-Lightning",
+          "latencyMs": 17659,
+          "usage": {
+            "promptTokens": 2953,
+            "completionTokens": 4802,
+            "reasoningTokens": 4077
+          },
+          "thinking": true
+        }
+      }
+    },
+    {
+      "scenario": "gradual_decline",
+      "run": "nvidia/Nemotron-3_5-Lightning (reasoning off)",
+      "calculatedConfidence": "high",
+      "outcome": {
+        "ok": true,
+        "output": {
+          "assessment": "The plant's moisture has been steadily decreasing over the past 72 hours, from approximately 55% to 33% at the current reading. The deterministic trend indicates a consistent decline of about 0.45 percentage points per hour with very high fit (R² = 0.997). The latest reading of 33.2% moisture is below the owner's stated preference of allowing the top 3 cm to dry before watering, though the system has not recorded any watering events in the history. The sensor reports adequate status and the temperature is 23.1°C. All readings are simulated, not measured. The plant is in bright indirect light in a 20 cm plastic nursery pot with chunky aroid mix. No sudden changes or watering responses are recorded.",
+          "observed_facts": [
+            "Latest moisture reading is 33.2% at 2026-10-18T12:00:00Z",
+            "Moisture has declined from ~55% to 33% over the past 72 hours",
+            "Deterministic trend shows -0.45 percentage points per hour decline (R² = 0.997)",
+            "71.5 hours of readings with 144 data points",
+            "Owner's care preference: water when top 3 cm feel dry",
+            "No watering events recorded in care_events",
+            "Latest temperature is 23.1°C",
+            "Sensor status is adequate, all readings are simulated"
+          ],
+          "interpretation": "Interpretation: The downward moisture trend, if continued, would bring the substrate below the owner's dryness threshold within roughly 50 hours. Because the readings are simulated, the actual substrate condition cannot be verified from this data alone. The high R² value suggests the decline is consistent and predictable within the simulation, but real-world factors (evaporation, plant uptake, pot drainage) are not captured. No watering has occurred in the recorded history, so it is unknown whether the plant has been watered since the simulated period began.",
+          "recommended_action": "Water the plant when the top 3 cm of the aroid mix feel dry, using room-temperature water until modest runoff appears at the pot's bottom.",
+          "reasons": [
+            "The moisture trend is declining and the current 33.2% reading is below the owner's stated dryness preference threshold",
+            "Watering when the top 3 cm are dry aligns with the owner's care preferences and is a standard practice for Monstera deliciosa in chunky aroid mix",
+            "Adding water will halt the simulated decline and reset the moisture baseline for future trend analysis"
+          ],
+          "confidence": "medium",
+          "limitations": [
+            "All moisture readings are simulated, not measured; real substrate condition is unknown",
+            "No watering history is recorded, so the starting point of the decline is uncertain",
+            "The deterministic trend is based on simulated data and may not reflect actual plant water use",
+            "Temperature and light conditions are described but their interaction with moisture loss is not quantified in the evidence",
+            "No sudden changes or watering responses are recorded, limiting insight into plant responsiveness"
+          ],
+          "follow_up_observation": "Check the substrate moisture at the top 3 cm in 24–48 hours after watering to verify that the moisture level has risen and stabilized, and monitor the trend direction in subsequent readings.",
+          "needs_more_data": true
+        },
+        "confidenceCapped": false,
+        "meta": {
+          "model": "nvidia/Nemotron-3_5-Lightning",
+          "latencyMs": 2987,
+          "usage": {
+            "promptTokens": 2953,
+            "completionTokens": 723,
+            "reasoningTokens": 0
+          },
+          "thinking": false
+        }
+      }
+    },
+    {
+      "scenario": "gradual_decline",
+      "run": "nvidia/nemotron-3-super-120b-a12b (reasoning on)",
+      "calculatedConfidence": "high",
+      "outcome": {
+        "ok": true,
+        "output": {
+          "assessment": "The plant's soil moisture is currently 33.2% and has been declining steadily at about -0.45% per hour over the past 71.5 hours, with no watering recorded recently.",
+          "observed_facts": [
+            "latest_moisture_percent = 33.2%",
+            "last_watering_at = null",
+            "calculated.trend = declining with estimated_change_percent_per_hour = -0.45%/h",
+            "sources indicate readings are simulated",
+            "user_care_preferences watering: 'When the top 3 cm feel dry'"
+          ],
+          "interpretation": "Interpretation: The low and decreasing moisture suggests the soil is drying out, but we have not confirmed whether the top 3 cm feels dry as the user's watering cue requires.",
+          "recommended_action": "Check the top 3 cm of soil for dryness; if it feels dry, water the plant according to the user's preference.",
+          "reasons": [
+            "Moisture is 33.2% and declining at -0.45% per hour, indicating ongoing drying.",
+            "No watering has been recorded recently.",
+            "User prefers to water when the top 3 cm feels dry, so verifying that condition aligns with preference."
+          ],
+          "confidence": "high",
+          "limitations": [
+            "Readings are simulated, not actual measurements.",
+            "No direct measurement of top 3 cm soil dryness.",
+            "No leaf health or other stress indicators provided."
+          ],
+          "follow_up_observation": "After checking the top 3 cm soil, record whether it feels dry and note any change in moisture percentage after watering (if performed).",
+          "needs_more_data": true
+        },
+        "confidenceCapped": false,
+        "meta": {
+          "model": "nvidia/nemotron-3-super-120b-a12b",
+          "latencyMs": 5953,
+          "usage": {
+            "promptTokens": 2953,
+            "completionTokens": 1047,
+            "reasoningTokens": 684
+          },
+          "thinking": true
+        }
+      }
+    },
+    {
+      "scenario": "watering_response",
+      "run": "nvidia/Nemotron-3_5-Lightning (reasoning on)",
+      "calculatedConfidence": "high",
+      "outcome": {
+        "ok": true,
+        "output": {
+          "assessment": "The simulated moisture data show a recent decline from a post-watering peak of 67.6% to 57.2% over approximately 21 hours, with an overall calculated trend of -0.474 percentage points per hour (R² = 0.971). The data are marked as simulated, not measured, so actual plant water status cannot be confirmed from readings alone.",
+          "observed_facts": [
+            "Latest moisture percent is 57.2 at 2026-10-18T12:00:00Z (source: simulated).",
+            "Calculated declining trend is -0.474 percentage points per hour over 23 hours, with R² = 0.971 (source: calculated, simulated data).",
+            "A sudden rise in moisture from 42.7% to 67.6% started at 2026-10-17T11:30:00Z (source: calculated sudden_changes).",
+            "Response after watering at 2026-10-17T12:00:00Z showed moisture increase from 42.7% to 67.6% (24.9 point change) (source: calculated responses_after_watering).",
+            "User care preference specifies watering when top 3 cm feel dry (source: user_care_preferences).",
+            "Plant is Monstera deliciosa, located in living room east window, bright indirect light, 20 cm plastic pot with chunky aroid mix (source: plant profile)."
+          ],
+          "interpretation": "Interpretation: The calculated declining trend and post-watering moisture rise are derived from simulated readings and do not confirm actual plant water status. The observed rise after watering is consistent with typical soil response but cannot be established as causal without real measurements.",
+          "recommended_action": "Manually assess the top 3 cm of soil moisture before the next watering using a finger or probe, to verify whether the plant requires water per the stated preference.",
+          "reasons": [
+            "Simulated moisture data cannot confirm the actual dryness of the top 3 cm of soil, which is the basis of the user's care preference.",
+            "Manual soil checking provides direct, real-world information to guide watering decisions.",
+            "This step reduces uncertainty about whether the declining trend reflects actual plant needs or simulated data artifacts."
+          ],
+          "confidence": "medium",
+          "limitations": [
+            "All moisture and temperature readings are simulated, not measured.",
+            "No direct observation of top 3 cm soil condition is included in the evidence.",
+            "User care preference for watering at top 3 cm dryness is not verified as appropriate for Monstera deliciosa.",
+            "Calculated trend statistics apply only to the simulated dataset and may not reflect real plant physiology."
+          ],
+          "follow_up_observation": "After manual soil checking, record the next hourly moisture reading to see how the trend responds to actual watering decisions based on real soil condition.",
+          "needs_more_data": true
+        },
+        "confidenceCapped": false,
+        "meta": {
+          "model": "nvidia/Nemotron-3_5-Lightning",
+          "latencyMs": 16036,
+          "usage": {
+            "promptTokens": 3156,
+            "completionTokens": 4454,
+            "reasoningTokens": 3801
+          },
+          "thinking": true
+        }
+      }
+    },
+    {
+      "scenario": "watering_response",
+      "run": "nvidia/Nemotron-3_5-Lightning (reasoning off)",
+      "calculatedConfidence": "high",
+      "outcome": {
+        "ok": true,
+        "output": {
+          "assessment": "The plant's moisture has been declining over the past 23 hours (from ~68% to 57.2%) after a watering event on 2026-10-17 at 12:00 UTC that raised moisture from 42.7% to 67.6%. The current moisture is 57.2% at 2026-10-18 12:00 UTC, and the deterministic trend indicates a steady decline of approximately 0.474 percentage points per hour. The hourly series shows a clear drop from the post-watering peak, with readings now near the lower end of the 48‑hour window. The user's care preference is to water when the top 3 cm feel dry, but no direct soil‑dryness data are provided.",
+          "observed_facts": [
+            "Plant is Monstera deliciosa in a 20 cm plastic nursery pot with chunky aroid mix, located at an east‑window in the living room.",
+            "Latest moisture reading is 57.2% at 2026‑10‑18 12:00 UTC.",
+            "Deterministic trend shows a declining moisture trajectory over the past 23 hours with an estimated change of -0.474 % per hour (R² = 0.971, 47 readings).",
+            "A sudden rise from 42.7% to 67.6% occurred between 2026‑10‑17 11:30 UTC and the post‑watering period.",
+            "After the 2026‑10‑17 12:00 UTC watering (300 ml), moisture increased from 42.7% to 67.6% (change of 24.9 percentage points).",
+            "Hourly moisture in the 48‑hour window dropped from ~53% to the current 57.2%, with a notable downward slope after 2026‑10‑17 13:00 UTC.",
+            "User care preference: water when the top 3 cm feel dry.",
+            "All sensor readings are simulated, not measured."
+          ],
+          "interpretation": "Interpretation: The post‑watering moisture spike has been gradually decreasing, and the current trajectory is downward. Whether the plant needs water now depends on the (unobserved) soil moisture at the 3 cm depth. The deterministic trend suggests continued decline if no further watering occurs, but the simulated nature of the data means the exact rate cannot be treated as a physical measurement.",
+          "recommended_action": "Check the soil moisture at the 3 cm depth (e.g., by inserting a finger or a moisture probe) to determine if the top layer is dry, then water only if it feels dry, consistent with the user's stated preference.",
+          "reasons": [
+            "The deterministic trend shows a steady decline, but the trigger for watering according to the user's preference is tactile dryness at 3 cm, not a specific percentage.",
+            "The post‑watering moisture peak has already fallen to 57.2%; confirming the actual soil state will prevent over‑ or under‑watering.",
+            "Simulated readings mean the calculated trend is an estimate, not a direct measurement of plant water status."
+          ],
+          "confidence": "medium",
+          "limitations": [
+            "All moisture and temperature values are simulated, not physical measurements.",
+            "No direct observation of soil dryness at the 3 cm depth is provided.",
+            "The deterministic trend is a statistical fit to simulated data and may not reflect real‑world plant water use.",
+            "The plant's response to watering (moisture increase) is an observed response, not proof of causal control over future moisture."
+          ],
+          "follow_up_observation": "Insert a finger or moisture probe into the top 3 cm of the aroid mix after the current reading; if the soil feels dry, water according to the user's preference; if it feels moist, wait before watering.",
+          "needs_more_data": true
+        },
+        "confidenceCapped": false,
+        "meta": {
+          "model": "nvidia/Nemotron-3_5-Lightning",
+          "latencyMs": 3452,
+          "usage": {
+            "promptTokens": 3156,
+            "completionTokens": 882,
+            "reasoningTokens": 0
+          },
+          "thinking": false
+        }
+      }
+    },
+    {
+      "scenario": "watering_response",
+      "run": "nvidia/nemotron-3-super-120b-a12b (reasoning on)",
+      "calculatedConfidence": "high",
+      "outcome": {
+        "ok": true,
+        "output": {
+          "assessment": "The plant's soil moisture is currently 57.2% and has been declining at an estimated rate of -0.474% per hour since the last watering 24 hours ago. After watering, moisture rose from 42.7% to 67.6% and has since gradually decreased, suggesting the soil is drying out.",
+          "observed_facts": [
+            "Latest moisture percent: 57.2% at 2026-10-18T12:00:00Z (latest_reading)",
+            "Trend: declining with estimated change -0.474% per hour (calculated)",
+            "Last watering: 2026-10-17T12:00:00Z, 300 ml (care_events)",
+            "Post‑watering response: moisture increased from 42.7% to 67.6% (responses_after_watering)",
+            "Hourly moisture shows a gradual decline from a peak of 68% at 13:00 Oct 17 to 57.2% at 12:00 Oct 18 (hourly_moisture_last_48h)",
+            "User preference: water when the top 3 cm feel dry (user_care_preferences)"
+          ],
+          "interpretation": "The declining trend indicates the soil is losing moisture; if it continues, the top 3 cm may soon reach the dryness threshold the user uses to trigger watering.",
+          "recommended_action": "Check the top 3 cm of soil for dryness (e.g., using a finger test) to decide whether to water now.",
+          "reasons": [
+            "The moisture trend is downward and the last watering was 24 hours ago.",
+            "The user’s care rule is to water when the top 3 cm feels dry.",
+            "A direct soil‑moisture check aligns with the user’s preference and the current drying trend."
+          ],
+          "confidence": "medium",
+          "limitations": [
+            "No direct measurement of the top 3 cm soil moisture is provided.",
+            "All readings are simulated, not actual measurements.",
+            "Environmental factors such as light intensity and temperature fluctuations are not quantified for their effect on water uptake."
+          ],
+          "follow_up_observation": "Re‑measure the soil moisture percent (or repeat the top‑3 cm dryness check) after a few hours—or after any watering—to see whether the trend stabilizes, rises, or continues to fall.",
+          "needs_more_data": true
+        },
+        "confidenceCapped": false,
+        "meta": {
+          "model": "nvidia/nemotron-3-super-120b-a12b",
+          "latencyMs": 8630,
+          "usage": {
+            "promptTokens": 3156,
+            "completionTokens": 1638,
+            "reasoningTokens": 1082
+          },
+          "thinking": true
+        }
+      }
+    },
+    {
+      "scenario": "stable",
+      "run": "nvidia/Nemotron-3_5-Lightning (reasoning on)",
+      "calculatedConfidence": "high",
+      "outcome": {
+        "ok": true,
+        "output": {
+          "assessment": "The latest simulated moisture reading is 46.3% as of 2026-10-18T12:00:00Z, and the calculated trend over 71.5 hours is stable based on 144 readings. No sudden moisture changes or recorded watering responses are present. The owner's care preference is to water when the top 3 cm of soil feel dry.",
+          "observed_facts": [
+            "Latest moisture percent is 46.3% at 2026-10-18T12:00:00Z.",
+            "Calculated trend over 71.5 hours is stable with 144 readings and an R² of 0.456.",
+            "Hourly moisture in the last 48 hours has ranged from 45.8% to 48.3%.",
+            "Latest temperature is 23.1°C with sensor status adequate.",
+            "Data source is simulated, not measured.",
+            "User care preference specifies watering when the top 3 cm feel dry.",
+            "No care events or watering responses are recorded."
+          ],
+          "interpretation": "The stable simulated moisture trend is consistent with the plant's current environment and care preference, but because all readings are simulated, these patterns do not reflect actual measured soil conditions. No causal conclusion about plant health should be drawn from moisture and temperature alone.",
+          "recommended_action": "Manually check the top 3 cm of the aroid mix by feel or with a moisture probe to determine if watering is needed, aligning with the user's stated care preference.",
+          "reasons": [
+            "The latest moisture reading is simulated, so physical verification is required to confirm dryness.",
+            "The user's care preference explicitly triggers watering based on top-3-cm dryness, which cannot be assessed from simulated percent values alone.",
+            "No care events or watering responses are recorded, so the actual soil state is unknown."
+          ],
+          "confidence": "medium",
+          "limitations": [
+            "All moisture and temperature readings are simulated, not measured.",
+            "No manual soil assessment or tactile data is available.",
+            "The trend R² of 0.456 indicates moderate fit despite high reading count.",
+            "Cannot determine watering need without physical soil check."
+          ],
+          "follow_up_observation": "Perform a manual soil moisture check at the top 3 cm after the next irrigation cycle, or obtain a non-simulated reading in 24 hours, to evaluate alignment with the user's care preference.",
+          "needs_more_data": true
+        },
+        "confidenceCapped": false,
+        "meta": {
+          "model": "nvidia/Nemotron-3_5-Lightning",
+          "latencyMs": 17651,
+          "usage": {
+            "promptTokens": 2937,
+            "completionTokens": 4669,
+            "reasoningTokens": 4129
+          },
+          "thinking": true
+        }
+      }
+    },
+    {
+      "scenario": "stable",
+      "run": "nvidia/Nemotron-3_5-Lightning (reasoning off)",
+      "calculatedConfidence": "high",
+      "outcome": {
+        "ok": true,
+        "output": {
+          "assessment": "The plant's moisture has been stable around 46–48% over the past 48 hours, with the most recent reading at 46.3% at the east window in bright indirect light. Temperature is 23.1°C. No watering or response events are recorded. The underlying data are simulated, not measured.",
+          "observed_facts": [
+            "Latest moisture reading is 46.3% at 2026-10-18T12:00:00Z.",
+            "Temperature is 23.1°C.",
+            "Moisture over the last 48 hours has ranged from 45.8% to 48.3%.",
+            "Trend is calculated as stable with an R² of 0.456 based on 144 readings over 71.5 hours.",
+            "No care events are recorded.",
+            "Data source is simulated, not measured."
+          ],
+          "interpretation": "Interpretation: The moisture level is moderate and has not shown a downward trend; however, because the readings are simulated, they should not be treated as physical measurements. The stable calculated trend suggests no abrupt change in the simulated data.",
+          "recommended_action": "Check the soil moisture manually by inserting a finger or moisture probe into the top 3 cm of the aroid mix, following the user's preference to water when the top 3 cm feel dry.",
+          "reasons": [
+            "The user's care preference is to water when the top 3 cm feel dry.",
+            "Simulated readings cannot confirm whether the soil is actually dry, so a physical check is needed.",
+            "The latest moisture value of 46.3% is in the mid‑range of the recent history, but without measured data the exact soil condition is unknown."
+          ],
+          "confidence": "medium",
+          "limitations": [
+            "Readings are simulated, not physical measurements.",
+            "No actual soil moisture or watering events are recorded.",
+            "The calculated trend is based on simulated data and has moderate R² fit."
+          ],
+          "follow_up_observation": "After the manual soil check, record the actual moisture feeling (dry/moist) and, if watering occurs, log the event with timestamp and observed soil condition.",
+          "needs_more_data": true
+        },
+        "confidenceCapped": false,
+        "meta": {
+          "model": "nvidia/Nemotron-3_5-Lightning",
+          "latencyMs": 2144,
+          "usage": {
+            "promptTokens": 2937,
+            "completionTokens": 482,
+            "reasoningTokens": 0
+          },
+          "thinking": false
+        }
+      }
+    },
+    {
+      "scenario": "stable",
+      "run": "nvidia/nemotron-3-super-120b-a12b (reasoning on)",
+      "calculatedConfidence": "high",
+      "outcome": {
+        "ok": true,
+        "output": {
+          "assessment": "The plant's moisture readings have been stable around 46% over the past 48 hours with no recorded watering events, and the trend is assessed as stable. According to the user's care preference, watering should occur when the top 3 cm of soil feels dry.",
+          "observed_facts": [
+            "Latest moisture percent is 46.3% (latest_reading.moisture_percent)",
+            "Trend is stable with estimated change percent per hour null (calculated.trend)",
+            "No watering events recorded (care_events empty, last_watering_at null)",
+            "Hourly moisture over the past 48 hours ranges between 45.8% and 48.3% (hourly_moisture_last_48h)",
+            "Source of readings is simulated (sources includes simulated)",
+            "User care preference: water when the top 3 cm feel dry (user_care_preferences.watering)"
+          ],
+          "interpretation": "The consistent moisture level and absence of recent watering suggest the soil may be drying gradually, but without a direct check of the top 3 cm we cannot confirm whether it has reached the dryness threshold that triggers watering.",
+          "recommended_action": "Check the top 3 cm of soil for dryness (e.g., with a finger or moisture probe) and water the plant if it feels dry.",
+          "reasons": [
+            "Matches the user's stated watering rule",
+            "No recent watering events are logged",
+            "Stable moisture trend indicates no recent water addition",
+            "A manual check will verify the actual dryness condition before acting"
+          ],
+          "confidence": "high",
+          "limitations": [
+            "Readings are simulated, not actual measurements",
+            "No direct measurement of the top 3 cm soil dryness",
+            "Species‑specific moisture threshold for Monstera deliciosa is not provided"
+          ],
+          "follow_up_observation": "After performing the soil‑dryness check, re‑measure the moisture percent (or observe any change) to see if the reading shifts as expected following watering or confirms dryness.",
+          "needs_more_data": true
+        },
+        "confidenceCapped": false,
+        "meta": {
+          "model": "nvidia/nemotron-3-super-120b-a12b",
+          "latencyMs": 5850,
+          "usage": {
+            "promptTokens": 2937,
+            "completionTokens": 1091,
+            "reasoningTokens": 639
+          },
+          "thinking": true
+        }
+      }
+    },
+    {
+      "scenario": "noisy",
+      "run": "nvidia/Nemotron-3_5-Lightning (reasoning on)",
+      "calculatedConfidence": "low",
+      "outcome": {
+        "ok": true,
+        "output": {
+          "assessment": "The most recent simulated moisture reading for this Monstera deliciosa is 43%, recorded at 2026-10-18T12:00:00.000Z. Over the past 72 hours, moisture readings have varied widely (35.9%–65.8%) with no consistent trend identified (calculated R² = 0.197, confidence low). The owner’s care preference is to water when the top 3 cm of soil feel dry, but no in-situ verification or last watering timestamp is provided in the data.",
+          "observed_facts": [
+            "Latest moisture percent is 43 at 2026-10-18T12:00:00.000Z.",
+            "All sensor source entries are marked as 'simulated'.",
+            "Moisture readings over the past 72 hours range from 35.9% to 65.8%.",
+            "Calculated trend R² is 0.197 with confidence low.",
+            "User care preference specifies watering when the top 3 cm feel dry.",
+            "Plant species is Monstera deliciosa located in bright indirect light with a 20 cm plastic pot and chunky aroid mix."
+          ],
+          "interpretation": "Interpretation: The simulated and highly variable moisture readings mean that the 43% latest value cannot reliably indicate watering needs. The unclear trend (R² = 0.197) and lack of last watering timestamp further limit assessment. The owner's preference for top-3-cm-dry watering is the most applicable guideline, but requires physical soil checks.",
+          "recommended_action": "Physically check the top 3 cm of the aroid mix by feeling for dryness, per the owner's care preference.",
+          "reasons": [
+            "The simulated moisture readings show high variability and no consistent trend, making them unreliable for watering decisions.",
+            "The latest moisture reading (43%) does not by itself indicate whether the top 3 cm of soil are dry.",
+            "No last watering timestamp is provided, so a physical check is the most direct way to evaluate current soil moisture.",
+            "The owner's care preference is explicitly to water when the top 3 cm feel dry, which requires in-situ assessment."
+          ],
+          "confidence": "low",
+          "limitations": [
+            "All moisture readings are simulated and may not reflect actual soil conditions.",
+            "High temporal variability (35.9%–65.8%) prevents trend identification or reliable moisture state assessment.",
+            "No in-situ soil moisture verification or last watering timestamp is available.",
+            "Causal links between environmental conditions and moisture changes cannot be established from the data."
+          ],
+          "follow_up_observation": "After performing the physical soil check, record the tactile moisture assessment and compare it with the next scheduled sensor reading to evaluate alignment and inform future watering decisions.",
+          "needs_more_data": true
+        },
+        "confidenceCapped": false,
+        "meta": {
+          "model": "nvidia/Nemotron-3_5-Lightning",
+          "latencyMs": 14448,
+          "usage": {
+            "promptTokens": 2953,
+            "completionTokens": 4033,
+            "reasoningTokens": 3404
+          },
+          "thinking": true
+        }
+      }
+    },
+    {
+      "scenario": "noisy",
+      "run": "nvidia/Nemotron-3_5-Lightning (reasoning off)",
+      "calculatedConfidence": "low",
+      "outcome": {
+        "ok": true,
+        "output": {
+          "assessment": "The plant's most recent moisture reading is 43%, recorded at the east window in bright indirect light. Over the past 48 hours, moisture has fluctuated between approximately 36% and 66%, with no consistent upward or downward direction. The calculated trend is unclear, and the sensor data are simulated, not measured. The owner waters when the top 3 cm feel dry. No care events or watering responses are recorded in the history.",
+          "observed_facts": [
+            "Latest moisture reading is 43% at 2026-10-18T12:00:00.000Z.",
+            "Moisture over the past 48 hours has ranged from about 36% to 66%.,"
+          ],
+          "interpretation": "Interpretation: The moisture level is moderate but variable; the unclear trend and simulated data mean it is uncertain whether the plant is drying out, staying stable, or at risk of over‑/under‑watering. The owner's preference to water when the top 3 cm feel dry cannot be verified from the sensor data alone.",
+          "recommended_action": "Check the soil moisture manually by inserting a finger or wooden stick about 3 cm into the aroid mix; if it feels dry at that depth, water the plant; if it feels moist, wait another day before checking again.",
+          "reasons": [
+            "The sensor data are simulated and too inconsistent to rely on for watering decisions.",
+            "The owner's care preference is based on tactile feel, not on the provided readings.",
+            "A manual check aligns with the owner's stated preference and avoids over‑watering if the soil is still moist."
+          ],
+          "confidence": "low",
+          "limitations": [
+            "Readings are simulated, not measured, and vary widely hour to hour.",
+            "No tactile soil‑moisture data are provided; the sensor may be noisy or conditions may have changed.",
+            "The unclear trend and low confidence mean the plant's water status is uncertain."
+          ],
+          "follow_up_observation": "Record the next manual soil‑moisture check (e.g., after 24 hours) and note whether the plant shows any wilting or perking up, then compare that observation to the sensor's subsequent readings.",
+          "needs_more_data": true
+        },
+        "confidenceCapped": false,
+        "meta": {
+          "model": "nvidia/Nemotron-3_5-Lightning",
+          "latencyMs": 2249,
+          "usage": {
+            "promptTokens": 2953,
+            "completionTokens": 489,
+            "reasoningTokens": 0
+          },
+          "thinking": false
+        }
+      }
+    },
+    {
+      "scenario": "noisy",
+      "run": "nvidia/nemotron-3-super-120b-a12b (reasoning on)",
+      "calculatedConfidence": "low",
+      "outcome": {
+        "ok": true,
+        "output": {
+          "assessment": "The plant's current soil moisture reads 43 % with no recent watering recorded, and moisture values have fluctuated widely over the past 48 hours without a clear upward or downward trend.",
+          "observed_facts": [
+            "Latest moisture percent is 43 % at 2026-10-18T12:00:00Z (latest_reading).",
+            "No watering event is recorded (last_watering_at is null).",
+            "Moisture readings over the last 48 hours range from ~35.9 % to ~65.8 % (hourly_moisture_last_48h).",
+            "The calculated trend is unclear with low confidence due to high variability (calculated.trend, calculated.confidence).",
+            "All readings are marked as simulated (sources)."
+          ],
+          "interpretation": "The wide swings in moisture suggest either environmental variability, sensor noise, or irregular watering, making it difficult to infer whether the soil is drying out or staying wet; this does not indicate disease but reflects uncertain moisture status.",
+          "recommended_action": "Perform a manual check of the top 3 cm of soil to see if it feels dry before deciding to water, following the user’s care preference.",
+          "reasons": [
+            "The user prefers watering when the top 3 cm feel dry (user_care_preferences.watering).",
+            "Current sensor data alone cannot confirm the moisture condition at that depth due to simulated and noisy readings.",
+            "A direct tactile check will provide the needed information to act according to the preferred rule."
+          ],
+          "confidence": "low",
+          "limitations": [
+            "No actual measurement of moisture at the top 3 cm depth.",
+            "All sensor data are simulated, not real measurements.",
+            "No recent watering history to calibrate response.",
+            "Trend analysis is inconclusive (low confidence, low r‑squared)."
+          ],
+          "follow_up_observation": "Record the outcome of the manual top‑3‑cm moisture check (dry or moist) and, if watering is performed, log the time and observe subsequent moisture readings to see the plant's response.",
+          "needs_more_data": true
+        },
+        "confidenceCapped": false,
+        "meta": {
+          "model": "nvidia/nemotron-3-super-120b-a12b",
+          "latencyMs": 4877,
+          "usage": {
+            "promptTokens": 2953,
+            "completionTokens": 745,
+            "reasoningTokens": 274
+          },
+          "thinking": true
+        }
+      }
+    },
+    {
+      "scenario": "stale",
+      "run": "nvidia/Nemotron-3_5-Lightning (reasoning on)",
+      "calculatedConfidence": "low",
+      "outcome": {
+        "ok": true,
+        "output": {
+          "assessment": "The most recent simulated moisture reading is 32.9% at 06:00 Z, recorded 6 hours ago; the calculated trend shows a steady decline over the past 65.5 hours with high fit (R²=0.996), but data freshness is stale and all readings are simulated, not measured. Current soil moisture status is therefore uncertain.",
+          "observed_facts": [
+            "Plant species is Monstera deliciosa in a 20 cm plastic nursery pot with chunky aroid mix, located at an east window with bright indirect light.",
+            "User care preference is to water when the top 3 cm of soil feel dry.",
+            "All sensor readings are simulated, not actual measurements, as indicated by sources: [simulated].",
+            "Latest recorded moisture is 32.9% at 2026-10-18T06:00:00.000Z.",
+            "Data freshness is stale; 360 minutes have elapsed since the latest reading.",
+            "Calculated trend is declining over 65.5 hours with 132 readings, estimated change -0.449% per hour, R² = 0.996.",
+            "No care events are recorded in the history.",
+            "Latest temperature reading is 20.8°C with sensor status adequate."
+          ],
+          "interpretation": "The declining moisture trend and stale, simulated data mean that the plant's current water status cannot be determined with confidence; the soil may be drying per the trend, but this is based on simulated readings only.",
+          "recommended_action": "Insert a finger into the top 3 cm of the soil to check moisture, following the user's stated care preference.",
+          "reasons": [
+            "The latest moisture reading is 360 minutes old, so current soil moisture is unknown per calculated limitations.",
+            "Simulated readings are not measurements, so direct verification is needed to confirm the plant's actual soil condition.",
+            "The user's care preference is to water when the top 3 cm feel dry; checking aligns with this preference and addresses the data gap."
+          ],
+          "confidence": "low",
+          "limitations": [
+            "Latest reading is 6 hours old; current soil moisture is unknown.",
+            "All readings are simulated, not actual measurements.",
+            "No care events are recorded, so actual watering history is absent.",
+            "Trend calculations are based on simulated data only.",
+            "No response data after potential watering is available."
+          ],
+          "follow_up_observation": "Record a current soil moisture check (or sensor reading) at the time of assessment and note the result; compare with the latest simulated reading after 1–2 hours to evaluate the drying rate.",
+          "needs_more_data": true
+        },
+        "confidenceCapped": false,
+        "meta": {
+          "model": "nvidia/Nemotron-3_5-Lightning",
+          "latencyMs": 15277,
+          "usage": {
+            "promptTokens": 2742,
+            "completionTokens": 3867,
+            "reasoningTokens": 3287
+          },
+          "thinking": true
+        }
+      }
+    },
+    {
+      "scenario": "stale",
+      "run": "nvidia/Nemotron-3_5-Lightning (reasoning off)",
+      "calculatedConfidence": "low",
+      "outcome": {
+        "ok": true,
+        "output": {
+          "assessment": "The plant's soil moisture has been steadily decreasing over the past 72 hours, with the most recent simulated reading at 32.9% moisture taken 360 minutes ago. The deterministic trend shows a consistent decline of approximately 0.45 percentage points per hour, and the reading is flagged as stale. No care events or watering history are recorded. The plant is in bright indirect light in a 20 cm plastic nursery pot with chunky aroid mix, and the owner waters when the top 3 cm feel dry.",
+          "observed_facts": [
+            "Latest simulated moisture reading is 32.9% recorded at 2026-10-18T06:00:00Z",
+            "Deterministic trend is declining at -0.449 percentage points per hour",
+            "Trend fit R² is 0.996 over 132 readings spanning 65.5 hours",
+            "Data freshness is stale with latest reading 360 minutes old",
+            "No care events or watering records are present in the history",
+            "Plant is in bright indirect light with a 20 cm plastic nursery pot and chunky aroid mix",
+            "Owner's care preference is to water when top 3 cm feel dry",
+            "Temperature at latest reading was 20.8°C with sensor status adequate"
+          ],
+          "interpretation": "Interpretation: The downward moisture trend combined with the stale reading means the current soil condition is uncertain. The consistent decline over 65+ hours suggests the soil may be drying out, but the age of the last reading prevents confirming the present state. The owner's watering preference based on tactile feel cannot be verified from the data.",
+          "recommended_action": "Wait for a fresh moisture reading before watering or adjusting care.",
+          "reasons": [
+            "The latest reading is 360 minutes old, so current moisture is unknown; watering without fresh data risks over- or under-watering.",
+            "The deterministic trend shows decline, but simulated data means the trend may not reflect real soil conditions.",
+            "No care events are recorded, so there is no confirmation of prior watering responses."
+          ],
+          "confidence": "low",
+          "limitations": [
+            "Latest reading is 360 minutes old, so current soil moisture is unknown.",
+            "All readings are simulated, not measured, so real-world soil condition cannot be confirmed.",
+            "No care events or watering history are present, preventing assessment of past watering effects.",
+            "Deterministic trend is based on simulated data and may not reflect actual plant water status."
+          ],
+          "follow_up_observation": "Obtain a current moisture reading (e.g., by inserting a finger or moisture meter into the top 3 cm of soil) to determine whether the declining trend continues in reality.",
+          "needs_more_data": true
+        },
+        "confidenceCapped": false,
+        "meta": {
+          "model": "nvidia/Nemotron-3_5-Lightning",
+          "latencyMs": 2396,
+          "usage": {
+            "promptTokens": 2742,
+            "completionTokens": 598,
+            "reasoningTokens": 0
+          },
+          "thinking": false
+        }
+      }
+    },
+    {
+      "scenario": "stale",
+      "run": "nvidia/nemotron-3-super-120b-a12b (reasoning on)",
+      "calculatedConfidence": "low",
+      "outcome": {
+        "ok": true,
+        "output": {
+          "assessment": "The plant's soil moisture was 32.9 % six hours ago and has been declining at an estimated rate of about 0.45 % per hour over the preceding 65.5 hours, according to the simulated data. No watering events are recorded, and the latest reading is stale, so the current moisture level is unknown.",
+          "observed_facts": [
+            "latest_moisture_percent: 32.9 % at 2026-10-18T06:00:00Z",
+            "estimated_change_percent_per_hour: -0.449 %/hr",
+            "trend_fit_r_squared: 0.996",
+            "trend_span_hours: 65.5 h",
+            "data_freshness: stale",
+            "minutes_since_latest_reading: 360 min",
+            "last_watering_at: null",
+            "care_events: []"
+          ],
+          "interpretation": "The declining trend suggests the soil is drying out; without a recent measurement we cannot confirm whether the top 3 cm of soil is dry enough to trigger watering per the user’s preference.",
+          "recommended_action": "Perform a manual check of the top 3 cm of soil for dryness (e.g., finger test) or obtain a current sensor moisture reading before deciding to water.",
+          "reasons": [
+            "The trend indicates ongoing moisture loss.",
+            "The latest reading is stale, so current conditions are unknown.",
+            "User care preference is to water when the top 3 cm feel dry, which requires a present‑time check."
+          ],
+          "confidence": "low",
+          "limitations": [
+            "No current moisture measurement; the 6‑hour‑old reading may not reflect present soil wetness.",
+            "All moisture data are simulated, not actual measurements.",
+            "No direct observation of the top 3 cm dryness."
+          ],
+          "follow_up_observation": "Obtain an up‑to‑date soil moisture reading (sensor or manual) of the top 3 cm to see if it is dry.",
+          "needs_more_data": true
+        },
+        "confidenceCapped": false,
+        "meta": {
+          "model": "nvidia/nemotron-3-super-120b-a12b",
+          "latencyMs": 5262,
+          "usage": {
+            "promptTokens": 2742,
+            "completionTokens": 789,
+            "reasoningTokens": 333
+          },
+          "thinking": true
+        }
+      }
+    }
+  ]
+}

@@ -66,6 +66,29 @@ export type Assessment = {
   confidence: Confidence;
   reasons: string[];
   limitations: string[];
+  observedFacts: string[];
+  interpretation: string | null;
+  followUpObservation: string | null;
+  needsMoreData: boolean | null;
+  /** True when the model claimed more confidence than the calculations allowed. */
+  confidenceCapped: boolean;
+  /** True when reasoning ran out of budget and the answer came from a retry without reasoning. */
+  retriedWithoutReasoning: boolean;
+  /** The deterministic numbers the assessment was based on. */
+  basis: AssessmentBasis | null;
+  fingerprint: string | null;
+};
+
+export type AssessmentBasis = {
+  trend: string;
+  estimatedChangePercentPerHour: number | null;
+  trendSampleCount: number;
+  trendSpanHours: number;
+  latestMoisturePercent: number | null;
+  dataFreshness: string;
+  calculatedConfidence: Confidence;
+  sources: ReadingSource[];
+  lastWateringAt: string | null;
 };
 
 export type InterventionOutcomeKind =

@@ -1,5 +1,6 @@
 import type {
   Assessment,
+  AssessmentBasis,
   CareEvent,
   CareEventType,
   Confidence,
@@ -67,6 +68,8 @@ export type AssessmentRow = {
   confidence: string;
   reasons: unknown;
   limitations: unknown;
+  evidence?: unknown;
+  trend_summary?: unknown;
 };
 
 export type OutcomeRow = {
@@ -86,7 +89,7 @@ export const READING_COLUMNS =
 export const DEVICE_COLUMNS = "id, plant_id, device_name, firmware_version, last_seen_at, created_at";
 export const CARE_EVENT_COLUMNS = "id, plant_id, event_type, occurred_at, amount_ml, notes";
 export const ASSESSMENT_COLUMNS =
-  "id, plant_id, created_at, ai_model, assessment, recommended_action, confidence, reasons, limitations";
+  "id, plant_id, created_at, ai_model, assessment, recommended_action, confidence, reasons, limitations, evidence, trend_summary";
 export const OUTCOME_COLUMNS = "id, plant_id, care_event_id, observed_at, outcome, explanation";
 
 const stringArray = (value: unknown): string[] =>
@@ -144,7 +147,31 @@ export function toCareEvent(row: CareEventRow): CareEvent {
   };
 }
 
+const asRecord = (value: unknown): Record<string, unknown> =>
+  value && typeof value === "object" && !Array.isArray(value) ? (value as Record<string, unknown>) : {};
+const asString = (value: unknown) => (typeof value === "string" ? value : null);
+const asNumber = (value: unknown) => (typeof value === "number" && Number.isFinite(value) ? value : null);
+
+function toBasis(trendSummary: unknown): AssessmentBasis | null {
+  const t = asRecord(trendSummary);
+  if (typeof t.trend !== "string") return null;
+  return {
+    trend: t.trend,
+    estimatedChangePercentPerHour: asNumber(t.estimatedChangePercentPerHour),
+    trendSampleCount: asNumber(t.trendSampleCount) ?? 0,
+    trendSpanHours: asNumber(t.trendSpanHours) ?? 0,
+    latestMoisturePercent: asNumber(t.latestMoisturePercent),
+    dataFreshness: asString(t.dataFreshness) ?? "none",
+    calculatedConfidence: (asString(t.confidence) as Confidence | null) ?? "low",
+    sources: stringArray(t.sources) as ReadingSource[],
+    lastWateringAt: asString(t.lastWateringAt),
+  };
+}
+
 export function toAssessment(row: AssessmentRow): Assessment {
+  const evidence = asRecord(row.evidence);
+  const output = asRecord(evidence.model_output);
+  const call = asRecord(evidence.call);
   return {
     id: row.id,
     plantId: row.plant_id,
@@ -155,6 +182,14 @@ export function toAssessment(row: AssessmentRow): Assessment {
     confidence: row.confidence as Confidence,
     reasons: stringArray(row.reasons),
     limitations: stringArray(row.limitations),
+    observedFacts: stringArray(output.observed_facts),
+    interpretation: asString(output.interpretation),
+    followUpObservation: asString(output.follow_up_observation),
+    needsMoreData: typeof output.needs_more_data === "boolean" ? output.needs_more_data : null,
+    confidenceCapped: call.confidence_capped === true,
+    retriedWithoutReasoning: call.retried_without_reasoning === true,
+    basis: toBasis(row.trend_summary),
+    fingerprint: asString(evidence.fingerprint),
   };
 }
 

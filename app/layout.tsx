@@ -9,11 +9,11 @@ const fraunces = Fraunces({ variable: "--font-fraunces", subsets: ["latin"], axe
 
 export const metadata: Metadata = {
   title: {
-    default: "Planti",
+    default: "Planti · Less guessing. More growing.",
     template: "%s · Planti",
   },
   description:
-    "A plant-care agent that remembers your plant's history, recommends evidence-based care, and checks whether it worked.",
+    "An intelligent plant-care agent that learns from your plant's history, combines real-time sensor data with trusted horticultural research, and helps you understand what your plants need. Planti tracks changing conditions, recommends evidence-based care, and learns from the results over time.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

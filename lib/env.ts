@@ -66,7 +66,12 @@ export function nebiusEnv() {
   return {
     apiKey: requireEnv("NEBIUS_API_KEY"),
     baseUrl: requireEnv("NEBIUS_BASE_URL"),
+    /** Primary model used for assessments. */
     model: requireEnv("NEBIUS_MODEL"),
+    /** Optional larger model used only for quality comparison. */
+    comparisonModel: read("NEBIUS_MODEL_SUPER") ?? null,
+    /** Nemotron reasoning before answering; on unless NEBIUS_ENABLE_THINKING=false. */
+    thinking: read("NEBIUS_ENABLE_THINKING") !== "false",
   };
 }
 

@@ -34,10 +34,7 @@ export default async function DashboardPage({ searchParams }: PageProps<"/">) {
           ) : null}
         </div>
         <div className="flex flex-wrap gap-2">
-          {/* Wired to the assessment API and care-event dialog in Phases 4–5. */}
-          <Button variant="secondary" disabled title={plant ? "Assessments are not available yet" : "Add a plant first"}>
-            Run assessment
-          </Button>
+          {/* Wired to the care-event dialog in Phase 5. */}
           <Button disabled title={plant ? "Care logging is not available yet" : "Add a plant first"}>
             Log watering
           </Button>
@@ -46,21 +43,21 @@ export default async function DashboardPage({ searchParams }: PageProps<"/">) {
 
       <ReadingStrip view={view} />
 
-      <div className="grid gap-6 lg:grid-cols-12">
+      <div className="grid gap-6 lg:grid-cols-12 lg:items-start">
         <Panel eyebrow="History · last 7 days" title="Soil moisture" className="lg:col-span-8">
           <MoistureChart readings={view.readings} careEvents={view.careEvents} />
         </Panel>
         <div className="lg:col-span-4">
-          <AnalysisPanel analysis={view.analysis} />
+          <AssessmentPanel assessment={view.latestAssessment} plantId={plant?.id ?? null} />
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-12">
+      <div className="grid gap-6 lg:grid-cols-12 lg:items-start">
         <div className="lg:col-span-8">
           <MemoryPanel narrative={view.narrative} entries={view.timeline} />
         </div>
         <div className="space-y-6 lg:col-span-4">
-          <AssessmentPanel assessment={view.latestAssessment} />
+          <AnalysisPanel analysis={view.analysis} />
           <CareEventsPanel events={view.careEvents} />
           {plant && view.simulatorEnabled ? <SimulatorPanel plantId={plant.id} /> : null}
         </div>

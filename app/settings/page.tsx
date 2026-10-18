@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { connection } from "next/server";
 import { Panel } from "@/components/ui/panel";
-import { deviceOnlineThresholdMinutes, integrationStatuses, simulatorEnabled, type Integration } from "@/lib/env";
+import { ModelTest } from "@/components/settings/model-test";
+import { lastModelCall } from "@/lib/ai/diagnostics";
+import { deviceOnlineThresholdMinutes, integrationStatuses, isConfigured, nebiusEnv, simulatorEnabled, type Integration } from "@/lib/env";
 
 export const metadata: Metadata = { title: "Settings" };
 
@@ -17,6 +19,8 @@ export default async function SettingsPage() {
   // Report the running configuration, not the one present at build time.
   await connection();
   const statuses = integrationStatuses();
+  const nebius = isConfigured("nebius") ? nebiusEnv() : null;
+  const lastCall = lastModelCall();
 
   return (
     <div className="space-y-6">
@@ -48,6 +52,40 @@ export default async function SettingsPage() {
             </li>
           ))}
         </ul>
+      </Panel>
+
+      <Panel eyebrow="Diagnostics" title="Model">
+        {nebius ? (
+          <div className="space-y-4">
+            <dl className="grid gap-3 text-sm sm:grid-cols-2">
+              <div>
+                <dt className="text-[0.6875rem] uppercase tracking-[0.12em] text-ink-muted">Assessment model</dt>
+                <dd className="mt-0.5 break-all font-mono text-ink">{nebius.model}</dd>
+              </div>
+              <div>
+                <dt className="text-[0.6875rem] uppercase tracking-[0.12em] text-ink-muted">Comparison model</dt>
+                <dd className="mt-0.5 break-all font-mono text-ink">{nebius.comparisonModel ?? "Not set"}</dd>
+              </div>
+              <div>
+                <dt className="text-[0.6875rem] uppercase tracking-[0.12em] text-ink-muted">Reasoning</dt>
+                <dd className="mt-0.5 text-ink">{nebius.thinking ? "On" : "Off"}</dd>
+              </div>
+              <div>
+                <dt className="text-[0.6875rem] uppercase tracking-[0.12em] text-ink-muted">Last assessment call</dt>
+                <dd className="mt-0.5 text-ink">
+                  {lastCall
+                    ? `${lastCall.ok ? "Succeeded" : `Failed (${lastCall.reason})`} in ${lastCall.latencyMs} ms${
+                        lastCall.promptTokens != null ? `, ${lastCall.promptTokens} prompt / ${lastCall.completionTokens} completion tokens` : ""
+                      }`
+                    : "None since the server started"}
+                </dd>
+              </div>
+            </dl>
+            <ModelTest />
+          </div>
+        ) : (
+          <p className="text-sm text-ink-muted">Nebius is not configured; assessments fall back to deterministic analysis.</p>
+        )}
       </Panel>
 
       <Panel eyebrow="Demo" title="Simulator">
