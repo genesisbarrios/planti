@@ -38,9 +38,28 @@ evidence is saved and reused rather than searched again on every reading.
 ```bash
 nvm use
 npm install
-cp .env.example .env.local   # fill in what you have; see comments in the file
+# create .env.local with the variables below
 npm run dev                  # http://localhost:3000
 ```
+
+### Environment variables (`.env.local`)
+
+Only `NEXT_PUBLIC_*` values reach the browser. Everything else is server-only.
+
+| Variable | Where to get it | Used for |
+| --- | --- | --- |
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase → Project Settings → API | All database access |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Same page (`sb_publishable_…`) | Browser and user-scoped queries; RLS applies |
+| `SUPABASE_SERVICE_ROLE_KEY` | Same page (secret key) | Server-only writes after credential/ownership checks |
+| `SUPABASE_DB_URL` | Supabase → Connect → Session pooler | Applying migrations with the CLI only |
+| `NEBIUS_API_KEY` | Nebius Token Factory → API keys | Nemotron assessments |
+| `NEBIUS_BASE_URL` | `https://api.tokenfactory.nebius.com/v1/` | Nemotron assessments |
+| `NEBIUS_MODEL` | A Nemotron model ID from the Token Factory catalog | Nemotron assessments |
+| `TAVILY_API_KEY` | app.tavily.com → API keys | Selective research |
+| `TAVILY_BASE_URL` | `https://api.tavily.com` (optional) | Selective research |
+| `DEVICE_INGESTION_SECRET` | `openssl rand -hex 32` | Hashing device credentials |
+| `DEVICE_ONLINE_THRESHOLD_MINUTES` | Optional, default `15` | When a device counts as online |
+| `NEXT_PUBLIC_APP_URL` | e.g. `http://localhost:3000` | Auth email redirects |
 
 The app runs without any credentials. Missing integrations show a setup notice,
 and **Settings** lists which ones are configured (variable names only).
