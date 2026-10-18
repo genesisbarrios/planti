@@ -86,3 +86,15 @@ export function deviceOnlineThresholdMinutes(): number {
   const parsed = Number(read("DEVICE_ONLINE_THRESHOLD_MINUTES"));
   return Number.isFinite(parsed) && parsed > 0 ? parsed : 15;
 }
+
+/**
+ * The simulator writes clearly labeled simulated data. It is on in
+ * development and off in production unless PLANTI_SIMULATOR_ENABLED=true
+ * (protected demo mode: still requires a signed-in owner of the plant).
+ */
+export function simulatorEnabled(): boolean {
+  const flag = read("PLANTI_SIMULATOR_ENABLED");
+  if (flag === "true") return true;
+  if (flag === "false") return false;
+  return process.env.NODE_ENV !== "production";
+}

@@ -128,6 +128,26 @@ describe("sensor readings RLS", () => {
     ).rejects.toThrow(/row-level security/);
   });
 
+  it("lets owners delete simulated readings but never device readings", async () => {
+    const simDeleted = await as(db, "authenticated", ALICE, () =>
+      rows("delete from sensor_readings where plant_id = $1 and source = 'simulated' returning id", [alicePlant]),
+    );
+    expect(simDeleted.length).toBeGreaterThan(0);
+    const deviceDeleted = await as(db, "authenticated", ALICE, () =>
+      rows("delete from sensor_readings where plant_id = $1 and source = 'device' returning id", [alicePlant]),
+    );
+    expect(deviceDeleted).toHaveLength(0);
+    expect(await rows("select id from sensor_readings where source = 'device'")).toHaveLength(1);
+  });
+
+  it("does not let others delete an owner's simulated readings", async () => {
+    await as(db, "authenticated", ALICE, () =>
+      rows("insert into sensor_readings (plant_id, recorded_at, source) values ($1, now(), 'simulated')", [alicePlant]),
+    );
+    const deleted = await as(db, "authenticated", BOB, () => rows("delete from sensor_readings returning id"));
+    expect(deleted).toHaveLength(0);
+  });
+
   it("blocks readings for someone else's plant", async () => {
     await expect(
       as(db, "authenticated", BOB, () =>

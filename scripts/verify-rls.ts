@@ -98,6 +98,20 @@ async function main() {
     const bobReading = await asBob.from("sensor_readings").insert({ plant_id: plantId, recorded_at: new Date().toISOString(), source: "simulated" });
     check("cannot add readings to another user's plant", !!bobReading.error);
 
+    await admin.from("sensor_readings").insert({
+      plant_id: plantId,
+      device_id: device!.id,
+      recorded_at: new Date(Date.now() - 60_000).toISOString(),
+      soil_moisture_percent: 41,
+      source: "device",
+    });
+    const bobDelete = await asBob.from("sensor_readings").delete().eq("plant_id", plantId).select("id");
+    check("others cannot delete simulated readings", (bobDelete.data?.length ?? 0) === 0);
+    const simDelete = await asAlice.from("sensor_readings").delete().eq("plant_id", plantId).eq("source", "simulated").select("id");
+    check("owner can clear simulated readings", (simDelete.data?.length ?? 0) === 1, simDelete.error?.message);
+    const deviceDelete = await asAlice.from("sensor_readings").delete().eq("plant_id", plantId).eq("source", "device").select("id");
+    check("owner cannot delete device readings", (deviceDelete.data?.length ?? 0) === 0);
+
     const hash = await asAlice.from("devices").select("device_key_hash");
     check("device credential hash is not readable", !!hash.error);
 

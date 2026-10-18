@@ -1,11 +1,24 @@
 import { describe, expect, it } from "vitest";
-import { generateScenario } from "@/lib/simulation/scenarios";
+import { analyzePlant } from "@/lib/analysis/analyze";
+import { generateScenario, isScenarioId, SCENARIOS, type ScenarioId } from "@/lib/simulation/scenarios";
 
 const end = new Date("2026-10-18T12:00:00.000Z");
 
+/** Runs a simulated timeline through the same analysis used for live data. */
+function analyzeScenario(scenario: ScenarioId) {
+  const timeline = generateScenario(scenario, { end, seed: 20261018 });
+  return analyzePlant({
+    readings: timeline.readings.map((r) => ({ ...r, source: "simulated" })),
+    careEvents: timeline.careEvents.map((e, i) => ({ id: `e${i}`, eventType: e.eventType, occurredAt: e.occurredAt })),
+    now: end,
+  });
+}
+
 describe("simulation scenarios", () => {
   it("is repeatable for the same seed", () => {
-    expect(generateScenario("watering_response", { end, seed: 7 })).toEqual(generateScenario("watering_response", { end, seed: 7 }));
+    for (const id of Object.keys(SCENARIOS) as ScenarioId[]) {
+      expect(generateScenario(id, { end, seed: 7 })).toEqual(generateScenario(id, { end, seed: 7 }));
+    }
   });
 
   it("differs for different seeds", () => {
@@ -14,8 +27,8 @@ describe("simulation scenarios", () => {
     expect(a).not.toEqual(b);
   });
 
-  it("produces ordered readings ending at the requested time, within valid ranges", () => {
-    const { readings } = generateScenario("gradual_decline", { end, hours: 24, intervalMinutes: 30 });
+  it("produces ordered readings within valid ranges", () => {
+    const { readings } = generateScenario("noisy", { end, hours: 24, intervalMinutes: 30 });
     expect(readings).toHaveLength(49);
     expect(readings.at(-1)?.recordedAt).toBe(end.toISOString());
     for (let i = 1; i < readings.length; i++) expect(readings[i].recordedAt > readings[i - 1].recordedAt).toBe(true);
@@ -25,18 +38,45 @@ describe("simulation scenarios", () => {
     }
   });
 
-  it("declines overall in the gradual_decline scenario", () => {
-    const { readings, careEvents } = generateScenario("gradual_decline", { end });
-    expect(careEvents).toHaveLength(0);
-    expect(readings[0].soilMoisturePercent - readings.at(-1)!.soilMoisturePercent).toBeGreaterThan(20);
+  it("validates scenario ids", () => {
+    expect(isScenarioId("stable")).toBe(true);
+    expect(isScenarioId("toString")).toBe(false);
+    expect(isScenarioId(undefined)).toBe(false);
+  });
+});
+
+describe("scenarios through the analysis engine", () => {
+  it("gradual_decline → declining with a drying rate", () => {
+    const s = analyzeScenario("gradual_decline");
+    expect(s.trend).toBe("declining");
+    expect(s.estimatedChangePercentPerHour!).toBeCloseTo(-0.45, 1);
+    expect(s.confidence).toBe("high");
   });
 
-  it("rises after the watering event in the watering_response scenario", () => {
-    const { readings, careEvents } = generateScenario("watering_response", { end });
-    expect(careEvents).toHaveLength(1);
-    const wateredAt = careEvents[0].occurredAt;
-    const before = readings.filter((r) => r.recordedAt <= wateredAt).at(-1)!;
-    const after = readings.filter((r) => r.recordedAt > wateredAt)[3];
-    expect(after.soilMoisturePercent - before.soilMoisturePercent).toBeGreaterThan(15);
+  it("watering_response → declining since watering, with an observed increase", () => {
+    const s = analyzeScenario("watering_response");
+    expect(s.trend).toBe("declining");
+    expect(s.interventions).toHaveLength(1);
+    expect(s.interventions[0].outcome).toBe("moisture_increase_observed");
+    expect(s.trendSegmentStart).not.toBeNull();
+  });
+
+  it("stable → stable, no drying rate", () => {
+    const s = analyzeScenario("stable");
+    expect(s.trend).toBe("stable");
+    expect(s.estimatedChangePercentPerHour).toBeNull();
+  });
+
+  it("noisy → no confident trend", () => {
+    const s = analyzeScenario("noisy");
+    expect(s.confidence).toBe("low");
+    expect(s.estimatedChangePercentPerHour).toBeNull();
+  });
+
+  it("stale → stale data, low confidence", () => {
+    const s = analyzeScenario("stale");
+    expect(s.dataFreshness).toBe("stale");
+    expect(s.freshnessAgeMinutes).toBe(360);
+    expect(s.confidence).toBe("low");
   });
 });

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { connection } from "next/server";
 import { Panel } from "@/components/ui/panel";
-import { deviceOnlineThresholdMinutes, integrationStatuses, type Integration } from "@/lib/env";
+import { deviceOnlineThresholdMinutes, integrationStatuses, simulatorEnabled, type Integration } from "@/lib/env";
 
 export const metadata: Metadata = { title: "Settings" };
 
@@ -48,6 +48,16 @@ export default async function SettingsPage() {
             </li>
           ))}
         </ul>
+      </Panel>
+
+      <Panel eyebrow="Demo" title="Simulator">
+        <p className="text-sm text-ink">
+          The simulator is <span className="font-medium">{simulatorEnabled() ? "on" : "off"}</span> on this server.
+        </p>
+        <p className="mt-1 text-sm text-ink-muted">
+          It is on in development and off in production unless <code className="font-mono">PLANTI_SIMULATOR_ENABLED=true</code>.
+          Everything it writes is stored and shown as simulated, and it can only replace simulated data.
+        </p>
       </Panel>
 
       <Panel eyebrow="Heuristics" title="Thresholds">

@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { MoistureChart } from "@/components/charts/moisture-chart";
+import { AnalysisPanel } from "@/components/dashboard/analysis-panel";
 import { AssessmentPanel } from "@/components/dashboard/assessment-panel";
 import { CareEventsPanel } from "@/components/dashboard/care-events-panel";
 import { PlantHeader } from "@/components/dashboard/plant-header";
 import { PlantSwitcher } from "@/components/dashboard/plant-switcher";
 import { ReadingStrip } from "@/components/dashboard/reading-strip";
+import { SimulatorPanel } from "@/components/dashboard/simulator-panel";
 import { StateNotice } from "@/components/dashboard/state-notice";
 import { MemoryPanel } from "@/components/memory/memory-panel";
 import { Button } from "@/components/ui/button";
@@ -49,16 +51,18 @@ export default async function DashboardPage({ searchParams }: PageProps<"/">) {
           <MoistureChart readings={view.readings} careEvents={view.careEvents} />
         </Panel>
         <div className="lg:col-span-4">
-          <AssessmentPanel assessment={view.latestAssessment} />
+          <AnalysisPanel analysis={view.analysis} />
         </div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-12">
         <div className="lg:col-span-8">
-          <MemoryPanel outcomes={view.outcomes} />
+          <MemoryPanel narrative={view.narrative} entries={view.timeline} />
         </div>
-        <div className="lg:col-span-4">
+        <div className="space-y-6 lg:col-span-4">
+          <AssessmentPanel assessment={view.latestAssessment} />
           <CareEventsPanel events={view.careEvents} />
+          {plant && view.simulatorEnabled ? <SimulatorPanel plantId={plant.id} /> : null}
         </div>
       </div>
     </div>

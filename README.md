@@ -6,11 +6,11 @@ evidence, and then checks the readings that follow to see what actually happened
 
 Built for the Nebius x NVIDIA Global AI Hackathon.
 
-> **Status: Phase 2 (Supabase).** Schema, Row Level Security, auth, plant
-> profiles, device pairing and live dashboard queries work against a real
-> Supabase project. The analysis engine, Nemotron assessments, care-event
-> verification, Tavily research and firmware arrive in later phases. Nothing
-> below claims more than that.
+> **Status: Phase 3 (simulation + analysis).** Supabase schema with RLS, auth,
+> plant profiles, device pairing, a seeded simulator, the deterministic analysis
+> engine and the Plant Memory timeline work end to end. Nemotron assessments,
+> care logging and outcome persistence, Tavily research and firmware arrive in
+> later phases. Nothing below claims more than that.
 
 ## How Planti keeps its claims honest
 
@@ -59,6 +59,7 @@ Only `NEXT_PUBLIC_*` values reach the browser. Everything else is server-only.
 | `TAVILY_BASE_URL` | `https://api.tavily.com` (optional) | Selective research |
 | `DEVICE_INGESTION_SECRET` | `openssl rand -hex 32` | Hashing device credentials |
 | `DEVICE_ONLINE_THRESHOLD_MINUTES` | Optional, default `15` | When a device counts as online |
+| `PLANTI_SIMULATOR_ENABLED` | Optional; on in dev, off in production unless `true` | Demo simulator |
 | `NEXT_PUBLIC_APP_URL` | e.g. `http://localhost:3000` | Auth email redirects |
 
 The app runs without any credentials. Missing integrations show a setup notice,
@@ -78,6 +79,42 @@ and **Settings** lists which ones are configured (variable names only).
    `npm run seed:demo -- --email you@example.com` (add `--reset` to replace it).
 5. Verify RLS against your project: `npm run verify:rls`. This creates two
    temporary users, checks the policies through the public API, and deletes them.
+
+## Analysis engine
+
+All calculations are plain TypeScript in `lib/analysis/`, pure and unit tested.
+The model never computes them.
+
+- **Cleaning:** malformed, missing, out-of-range and duplicate readings are dropped and counted.
+- **Trend:** least-squares fit over readings *since the last watering or sustained jump* (so a
+  watering never bends the slope). Reports `declining`, `rising`, `stable`, `unclear`, or
+  `insufficient_data` (fewer than 8 readings or under 6 hours). It never guesses.
+- **Drying rate:** reported only for a clear decline.
+- **Sudden changes:** median-based and noise-adaptive, so sensor spikes aren't mistaken for watering.
+- **Before/after comparison:** readings nearest a care event versus readings after a soak-in
+  period. Outcomes are `moisture_increase_observed`, `no_measurable_change`,
+  `pending_observation` or `inconclusive`, and are worded as observations, never causes.
+- **Confidence:** from sample count, span, fit and freshness; stale, insufficient or unclear
+  data is always low.
+
+Thresholds live in `lib/analysis/config.ts` and are data-quality heuristics, not plant
+requirements.
+
+## Plant Memory
+
+`lib/memory/narrative.ts` writes the summary sentence by sentence from the analysis. Each
+sentence only appears when the evidence supports it. `lib/memory/timeline.ts` links care
+events to the responses that followed, unexplained jumps, reporting gaps and assessments.
+Every entry says whether it was logged, calculated from readings, or interpreted by the model.
+
+## Simulator
+
+Five seeded scenarios (`lib/simulation/scenarios.ts`): gradual decline, watering response,
+stable, noisy sensor, and stale/disconnected device. The same seed always gives the same
+timeline. Run them from the dashboard's **Demo timelines** panel. The simulator writes
+through the user's own session, so RLS limits it to that user's plants and to
+`source = 'simulated'`, and it can only clear simulated data. Each scenario runs through the
+same analysis code as live data, and tests check the result.
 
 ## Security model
 
@@ -118,6 +155,7 @@ components/          UI, grouped by feature (dashboard, charts, devices, memory,
 lib/analysis/        Deterministic calculations (pure, unit tested)
 lib/devices/         Device credential generation and verification
 lib/services/        Server-side data access (always via the user-scoped client first)
+lib/memory/          Plant Memory narrative and timeline
 lib/simulation/      Seeded, repeatable simulated timelines
 lib/validation/      Zod schemas for user input
 supabase/migrations/ Versioned schema, constraints and RLS policies

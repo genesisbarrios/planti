@@ -1,43 +1,57 @@
 import { EmptyState } from "@/components/ui/empty-state";
-import { Panel } from "@/components/ui/panel";
 import { LocalTime } from "@/components/ui/local-time";
-import type { InterventionOutcome, InterventionOutcomeKind } from "@/lib/types/domain";
+import { Panel } from "@/components/ui/panel";
+import type { TimelineEntry } from "@/lib/memory/timeline";
 
-const OUTCOME_LABEL: Record<InterventionOutcomeKind, { label: string; className: string }> = {
-  pending_observation: { label: "Waiting for readings", className: "bg-sunken text-ink-muted" },
-  moisture_increase_observed: { label: "Moisture rose afterwards", className: "bg-moss-soft text-forest" },
-  no_measurable_change: { label: "No measurable change", className: "bg-amber-soft text-amber" },
-  inconclusive: { label: "Inconclusive", className: "bg-sunken text-ink-muted" },
+const TONE_DOT: Record<TimelineEntry["tone"], string> = {
+  neutral: "bg-line-strong",
+  positive: "bg-moss",
+  caution: "bg-amber",
+  warning: "bg-clay",
+};
+
+const BASIS_LABEL: Record<TimelineEntry["basis"], string> = {
+  logged: "Logged",
+  calculated: "Calculated from readings",
+  deterministic: "Recorded outcome",
+  model: "Model interpretation",
 };
 
 /**
- * Plant Memory summary: how past care was followed by measured changes.
- * Outcomes describe observed responses, never proven causes.
+ * Plant Memory: a narrative built only from calculated evidence, and the
+ * timeline that connects care to what the readings did afterwards.
+ * Responses are observations, never proof of cause.
  */
-export function MemoryPanel({ outcomes }: { outcomes: InterventionOutcome[] }) {
+export function MemoryPanel({ narrative, entries }: { narrative: string[]; entries: TimelineEntry[] }) {
   return (
-    <Panel eyebrow="Plant memory" title="What happened after care">
-      {outcomes.length ? (
-        <ol className="relative space-y-5 border-l border-line pl-5">
-          {outcomes.map((o) => {
-            const style = OUTCOME_LABEL[o.outcome];
-            return (
-              <li key={o.id} className="relative">
-                <span aria-hidden="true" className="absolute -left-[1.6rem] top-1.5 h-2 w-2 rounded-full bg-moss" />
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${style.className}`}>{style.label}</span>
-                  <LocalTime iso={o.observedAt} className="font-mono text-xs text-ink-muted" />
-                </div>
-                {o.explanation ? <p className="mt-1.5 text-sm leading-relaxed text-ink">{o.explanation}</p> : null}
-              </li>
-            );
-          })}
-        </ol>
-      ) : (
+    <Panel eyebrow="Plant memory" title="What this plant's history shows">
+      {narrative.length === 0 && entries.length === 0 ? (
         <EmptyState title="No memory yet">
-          Planti builds memory by comparing readings before and after each care event. After you log watering and new readings
-          arrive, the observed response appears here, along with how confident Planti is in it.
+          Planti builds memory by comparing readings before and after each care event. Once readings arrive and you log care,
+          the story of how this plant responds appears here.
         </EmptyState>
+      ) : (
+        <div className="space-y-6">
+          {narrative.length ? (
+            <p className="font-serif text-[1.0625rem] leading-relaxed text-ink">{narrative.join(" ")}</p>
+          ) : null}
+
+          {entries.length ? (
+            <ol className="relative space-y-4 border-l border-line pl-5" aria-label="Timeline, newest first">
+              {entries.map((entry) => (
+                <li key={entry.id} className="relative">
+                  <span aria-hidden="true" className={`absolute -left-[1.53rem] top-1.5 h-2 w-2 rounded-full ring-4 ring-surface ${TONE_DOT[entry.tone]}`} />
+                  <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
+                    <p className="text-sm font-medium text-ink">{entry.title}</p>
+                    <LocalTime iso={entry.at} className="font-mono text-xs text-ink-muted" />
+                    <span className="text-[0.6875rem] uppercase tracking-[0.1em] text-ink-muted">{BASIS_LABEL[entry.basis]}</span>
+                  </div>
+                  {entry.detail ? <p className="mt-1 max-w-prose text-sm leading-relaxed text-ink-muted">{entry.detail}</p> : null}
+                </li>
+              ))}
+            </ol>
+          ) : null}
+        </div>
       )}
     </Panel>
   );

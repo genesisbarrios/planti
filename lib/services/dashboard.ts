@@ -1,8 +1,11 @@
 import "server-only";
 import { connection } from "next/server";
+import { analyzePlant, type TrendSummary } from "@/lib/analysis/analyze";
 import { classifyFreshness, deviceConnection, type DeviceConnection, type FreshnessResult } from "@/lib/analysis/freshness";
 import { getCurrentUser } from "@/lib/auth";
-import { deviceOnlineThresholdMinutes, isConfigured, missingEnv } from "@/lib/env";
+import { deviceOnlineThresholdMinutes, isConfigured, missingEnv, simulatorEnabled } from "@/lib/env";
+import { buildNarrative } from "@/lib/memory/narrative";
+import { buildTimeline, type TimelineEntry } from "@/lib/memory/timeline";
 import { createClient } from "@/lib/supabase/server";
 import type { Assessment, CareEvent, Device, InterventionOutcome, Plant, SensorReading } from "@/lib/types/domain";
 import { latestReadingAtByDevice, listDevices } from "./devices";
@@ -44,6 +47,11 @@ export type DashboardView = {
   outcomes: InterventionOutcome[];
   freshness: FreshnessResult;
   onlineThresholdMinutes: number;
+  /** Deterministic analysis of the plant's recent history. */
+  analysis: TrendSummary | null;
+  narrative: string[];
+  timeline: TimelineEntry[];
+  simulatorEnabled: boolean;
 };
 
 export type DashboardState =
@@ -66,6 +74,10 @@ function emptyView(now: Date): DashboardView {
     outcomes: [],
     freshness: classifyFreshness(null, now, onlineThresholdMinutes),
     onlineThresholdMinutes,
+    analysis: null,
+    narrative: [],
+    timeline: [],
+    simulatorEnabled: simulatorEnabled(),
   };
 }
 
@@ -119,14 +131,13 @@ export async function loadDashboard(selectedPlantId?: string): Promise<Dashboard
       .order("recorded_at", { ascending: false })
       .limit(1)
       .maybeSingle(),
-    supabase.from("care_events").select(CARE_EVENT_COLUMNS).eq("plant_id", plant.id).order("occurred_at", { ascending: false }).limit(10),
+    supabase.from("care_events").select(CARE_EVENT_COLUMNS).eq("plant_id", plant.id).order("occurred_at", { ascending: false }).limit(50),
     supabase
       .from("plant_assessments")
       .select(ASSESSMENT_COLUMNS)
       .eq("plant_id", plant.id)
       .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle(),
+      .limit(5),
     supabase.from("intervention_outcomes").select(OUTCOME_COLUMNS).eq("plant_id", plant.id).order("observed_at", { ascending: false }).limit(10),
     listDevices(supabase, plant.id),
   ]);
@@ -145,6 +156,11 @@ export async function loadDashboard(selectedPlantId?: string): Promise<Dashboard
     .map((d) => toDeviceStatus(d, latestByDevice.get(d.id) ?? null, now, view.onlineThresholdMinutes))
     .sort((a, b) => (b.latestReadingAt ?? "").localeCompare(a.latestReadingAt ?? ""));
 
+  const careEvents = (careResult.data as CareEventRow[]).map(toCareEvent);
+  const assessments = (assessmentResult.data as AssessmentRow[]).map(toAssessment);
+  const outcomes = (outcomeResult.data as OutcomeRow[]).map(toOutcome);
+  const analysis = analyzePlant({ readings, careEvents, now });
+
   return {
     kind: "ready",
     view: {
@@ -154,10 +170,13 @@ export async function loadDashboard(selectedPlantId?: string): Promise<Dashboard
       readings,
       latestReading,
       device: deviceStatuses[0] ?? null,
-      careEvents: (careResult.data as CareEventRow[]).map(toCareEvent),
-      latestAssessment: assessmentResult.data ? toAssessment(assessmentResult.data as AssessmentRow) : null,
-      outcomes: (outcomeResult.data as OutcomeRow[]).map(toOutcome),
+      careEvents: careEvents.slice(0, 10),
+      latestAssessment: assessments[0] ?? null,
+      outcomes,
       freshness: classifyFreshness(latestReading?.recordedAt, now, view.onlineThresholdMinutes),
+      analysis,
+      narrative: buildNarrative(analysis, now),
+      timeline: buildTimeline({ summary: analysis, careEvents, outcomes, assessments }),
     },
   };
 }
