@@ -28,12 +28,17 @@ export function StateNotice({ state }: { state: DashboardState }) {
     signed_out: {
       title: "Sign in to see your plants",
       body: <>Your plants and their history are private to your account.</>,
-      action: null,
+      action: <ButtonLink href="/login">Sign in</ButtonLink>,
     },
     schema_pending: {
       title: "Database schema not applied yet",
-      body: <>Supabase is connected. Plant data appears here once the Planti migrations have been applied.</>,
+      body: <>Supabase is connected, but the Planti tables don&apos;t exist yet. Apply the migrations in supabase/migrations.</>,
       action: <ButtonLink href="/settings" variant="secondary">View setup status</ButtonLink>,
+    },
+    no_plants: {
+      title: "Add your first plant",
+      body: <>Create a plant profile, then pair the sensor or run the simulator to start its memory.</>,
+      action: <ButtonLink href="/plants/new">Add plant</ButtonLink>,
     },
   }[state.kind];
 

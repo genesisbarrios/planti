@@ -1,6 +1,6 @@
 import { EmptyState } from "@/components/ui/empty-state";
 import { Panel } from "@/components/ui/panel";
-import { formatTimestamp } from "@/lib/format";
+import { LocalTime } from "@/components/ui/local-time";
 import type { Assessment, Confidence } from "@/lib/types/domain";
 
 export function AssessmentPanel({ assessment, actions }: { assessment: Assessment | null; actions?: React.ReactNode }) {
@@ -21,7 +21,7 @@ export function AssessmentPanel({ assessment, actions }: { assessment: Assessmen
 
           <p className="text-xs text-ink-muted">
             {assessment.aiModel ? `Interpreted by ${assessment.aiModel}` : "Deterministic analysis only"} ·{" "}
-            {formatTimestamp(assessment.createdAt)}
+            <LocalTime iso={assessment.createdAt} />
           </p>
         </div>
       ) : (

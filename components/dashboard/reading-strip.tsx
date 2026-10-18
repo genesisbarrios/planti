@@ -1,6 +1,7 @@
 import { LiveIndicator } from "@/components/ui/live-indicator";
 import { SourceBadge } from "@/components/ui/source-badge";
-import { formatAge, formatPercent, formatTemperature, formatTimestamp } from "@/lib/format";
+import { LocalTime } from "@/components/ui/local-time";
+import { formatAge, formatPercent, formatTemperature } from "@/lib/format";
 import type { DashboardView } from "@/lib/services/dashboard";
 
 /** The instrument row: current readings, their age, source and device link. */
@@ -28,7 +29,7 @@ export function ReadingStrip({ view }: { view: DashboardView }) {
         </Cell>
         <Cell label="Last reading">
           <Value small>{formatAge(freshness.ageMinutes)}</Value>
-          <Detail>{latestReading ? formatTimestamp(latestReading.recordedAt) : "—"}</Detail>
+          <Detail>{latestReading ? <LocalTime iso={latestReading.recordedAt} /> : "—"}</Detail>
         </Cell>
         <Cell label="Device">
           <Value small>{device?.deviceName ?? (device ? "Unnamed device" : "Not paired")}</Value>

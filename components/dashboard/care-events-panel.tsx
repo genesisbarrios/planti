@@ -1,6 +1,6 @@
 import { EmptyState } from "@/components/ui/empty-state";
 import { Panel } from "@/components/ui/panel";
-import { formatTimestamp } from "@/lib/format";
+import { LocalTime } from "@/components/ui/local-time";
 import type { CareEvent, CareEventType } from "@/lib/types/domain";
 
 const LABELS: Record<CareEventType, string> = {
@@ -25,9 +25,7 @@ export function CareEventsPanel({ events }: { events: CareEvent[] }) {
                 </p>
                 {event.notes ? <p className="mt-0.5 text-sm text-ink-muted">{event.notes}</p> : null}
               </div>
-              <time dateTime={event.occurredAt} className="shrink-0 font-mono text-xs text-ink-muted">
-                {formatTimestamp(event.occurredAt)}
-              </time>
+              <LocalTime iso={event.occurredAt} className="shrink-0 font-mono text-xs text-ink-muted" />
             </li>
           ))}
         </ol>

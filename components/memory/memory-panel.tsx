@@ -1,6 +1,6 @@
 import { EmptyState } from "@/components/ui/empty-state";
 import { Panel } from "@/components/ui/panel";
-import { formatTimestamp } from "@/lib/format";
+import { LocalTime } from "@/components/ui/local-time";
 import type { InterventionOutcome, InterventionOutcomeKind } from "@/lib/types/domain";
 
 const OUTCOME_LABEL: Record<InterventionOutcomeKind, { label: string; className: string }> = {
@@ -26,9 +26,7 @@ export function MemoryPanel({ outcomes }: { outcomes: InterventionOutcome[] }) {
                 <span aria-hidden="true" className="absolute -left-[1.6rem] top-1.5 h-2 w-2 rounded-full bg-moss" />
                 <div className="flex flex-wrap items-center gap-2">
                   <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${style.className}`}>{style.label}</span>
-                  <time dateTime={o.observedAt} className="font-mono text-xs text-ink-muted">
-                    {formatTimestamp(o.observedAt)}
-                  </time>
+                  <LocalTime iso={o.observedAt} className="font-mono text-xs text-ink-muted" />
                 </div>
                 {o.explanation ? <p className="mt-1.5 text-sm leading-relaxed text-ink">{o.explanation}</p> : null}
               </li>
