@@ -3,6 +3,7 @@ import { SourceBadge } from "@/components/ui/source-badge";
 import { LocalTime } from "@/components/ui/local-time";
 import { formatAge, formatPercent, formatTemperature } from "@/lib/format";
 import type { DashboardView } from "@/lib/services/dashboard";
+import type { ReadingSource } from "@/lib/types/domain";
 
 /** The instrument row: current readings, their age, source and device link. */
 export function ReadingStrip({ view }: { view: DashboardView }) {
@@ -19,12 +20,16 @@ export function ReadingStrip({ view }: { view: DashboardView }) {
       <dl className="grid grid-cols-2 gap-px bg-line lg:grid-cols-4">
         <Cell label="Soil moisture">
           <Value>{formatPercent(latestReading?.soilMoisturePercent)}</Value>
-          <Detail>{latestReading ? statusLabel(latestReading.soilMoistureStatus) : "Waiting for a first reading"}</Detail>
+          <Detail>{latestReading ? statusLabel(latestReading.soilMoistureStatus, latestReading.source) : "Waiting for a first reading"}</Detail>
         </Cell>
         <Cell label="Temperature">
           <Value>{formatTemperature(latestReading?.temperatureC)}</Value>
           <Detail>
-            {!latestReading ? "If the sensor reports it" : latestReading.temperatureC == null ? "Not reported by sensor" : "Soil sensor"}
+            {!latestReading
+              ? "If the sensor reports it"
+              : latestReading.temperatureC == null
+                ? "Not reported"
+                : SOURCE_ORIGIN[latestReading.source]}
           </Detail>
         </Cell>
         <Cell label="Last reading">
@@ -47,8 +52,15 @@ export function ReadingStrip({ view }: { view: DashboardView }) {
   );
 }
 
-function statusLabel(status: string): string {
-  return status === "unknown" ? "Status unknown" : `Reported ${status}`;
+const SOURCE_ORIGIN: Record<ReadingSource, string> = {
+  device: "Measured by sensor",
+  simulated: "Simulated value",
+  manual: "Entered manually",
+};
+
+function statusLabel(status: string, source: ReadingSource): string {
+  if (status === "unknown") return "Status unknown";
+  return source === "simulated" ? `Simulated status: ${status}` : `Sensor reports ${status}`;
 }
 
 function Cell({ label, children }: { label: string; children: React.ReactNode }) {

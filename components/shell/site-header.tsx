@@ -1,3 +1,4 @@
+import { LogOut } from "lucide-react";
 import Link from "next/link";
 import { signOut } from "@/app/login/actions";
 import { getCurrentUser } from "@/lib/auth";
@@ -11,21 +12,26 @@ export async function SiteHeader() {
       <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-10">
         <Link href="/" className="flex items-center gap-2.5" aria-label="Planti home">
           <Sprout />
-          <span className="font-serif text-[1.375rem] font-medium tracking-tight text-forest">planti</span>
+          <span className="hidden font-serif text-[1.375rem] font-medium tracking-tight text-forest sm:inline">planti</span>
         </Link>
-        <div className="flex items-center gap-2 sm:gap-4">
+        <div className="flex min-w-0 items-center gap-1 sm:gap-4">
           <NavLinks />
           {user ? (
-            <form action={signOut} className="flex items-center gap-3 border-l border-line pl-3 sm:pl-4">
+            <form action={signOut} className="flex items-center gap-3 border-l border-line pl-1 sm:pl-4">
               <span className="hidden max-w-[16ch] truncate text-sm text-ink-muted md:inline" title={user.email ?? undefined}>
                 {user.email}
               </span>
-              <button type="submit" className="rounded-md px-2 py-1.5 text-sm text-ink-muted hover:bg-sunken hover:text-ink">
-                Sign out
+              <button
+                type="submit"
+                aria-label="Sign out"
+                className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-md px-2 py-1.5 text-sm text-ink-muted hover:bg-sunken hover:text-ink"
+              >
+                <LogOut className="h-4 w-4 sm:hidden" aria-hidden="true" />
+                <span className="hidden sm:inline">Sign out</span>
               </button>
             </form>
           ) : (
-            <Link href="/login" className="rounded-md px-3 py-2 text-sm font-medium text-forest hover:bg-moss-soft">
+            <Link href="/login" className="whitespace-nowrap rounded-md px-2 py-2 text-sm font-medium text-forest hover:bg-moss-soft sm:px-3">
               Sign in
             </Link>
           )}
