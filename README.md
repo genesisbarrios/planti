@@ -9,12 +9,12 @@ evidence-based care, and learns from the results over time.
 
 Built for the Nebius x NVIDIA Global AI Hackathon.
 
-> **Status: Phase 5 (care + verification).** The full observe → analyze →
-> recommend → act → verify loop works end to end on Supabase, with real NVIDIA
-> Nemotron assessments through Nebius Token Factory. That covers care logging,
-> persisted intervention outcomes and a simulator fast-forward for live demos.
-> Tavily research and the T-Display S3 firmware come in later phases. Nothing
-> below claims more than that.
+> **Status: Phase 6 (hardware path).** The full observe → analyze → recommend →
+> act → verify loop works end to end on Supabase, with real NVIDIA Nemotron
+> assessments through Nebius Token Factory. Device telemetry ingestion is built
+> and tested end to end with the exact payload the firmware sends. The
+> T-Display S3 firmware compiles, but **has not yet been run on the physical board
+> and sensor**. Tavily research comes later. Nothing below claims more than that.
 
 ## How Planti keeps its claims honest
 
@@ -174,6 +174,31 @@ Demo loop: load *Moisture gradually declining* → **Run assessment** → **Log 
 **Fast-forward 6 hours** → the outcome becomes *Moisture rose afterwards* and Plant Memory
 updates → **Run assessment** again and the model sees the response.
 
+## Device telemetry
+
+`POST /api/telemetry` accepts readings from a paired device (firmware in
+[`firmware/planti-t-display-s3`](firmware/planti-t-display-s3/README.md)):
+
+- **Auth:** `Authorization: Bearer <device credential>`, verified in constant time against the
+  stored HMAC. Unknown devices and wrong credentials get the same `401`.
+- **Ownership:** the plant comes from the authenticated device record. Client-supplied fields
+  such as `plantId` are stripped.
+- **Source:** only `source: "device"` is accepted. Simulated or manual data gets `422`.
+- **Validation:** numeric ranges, and timestamps no more than 5 minutes ahead or 72 hours old
+  (a missing timestamp is stamped on receipt). Batches hold up to 50 readings, bodies up to 64 KB.
+- **Replays:** a unique `(device_id, recorded_at)` index rejects them, and they are reported as
+  `duplicates`. Requests are rate-limited per device and per client.
+- **Side effects:** updates `devices.last_seen_at` and the firmware version, then refreshes pending
+  watering outcomes. The response is compact: `{ ok, accepted, duplicates, rejected }`.
+
+Example:
+
+```bash
+curl -X POST "$APP_URL/api/telemetry" \
+  -H "Authorization: Bearer $PLANTI_DEVICE_CREDENTIAL" -H "Content-Type: application/json" \
+  -d '{"deviceId":"<id>","firmwareVersion":"0.1.0","soilMoistureRaw":512,"soilMoisturePercent":37.5,"temperatureC":24.1,"soilMoistureStatus":"unknown","source":"device"}'
+```
+
 ## Plant Memory
 
 `lib/memory/narrative.ts` writes the summary sentence by sentence from the analysis. Each
@@ -235,6 +260,7 @@ lib/memory/          Plant Memory narrative and timeline
 lib/simulation/      Seeded, repeatable simulated timelines
 lib/validation/      Zod schemas for user input
 supabase/migrations/ Versioned schema, constraints and RLS policies
+firmware/            T-Display S3 firmware (PlatformIO, Arduino/C++)
 scripts/             Demo seeding, live RLS verification, model comparison
 docs/evaluation/     Model comparison results and notes
 lib/supabase/        Browser, server and proxy Supabase clients

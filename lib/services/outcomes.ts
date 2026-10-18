@@ -15,9 +15,11 @@ const LOOKBACK_DAYS = 14;
  * Cheap when there is nothing to do (two queries), so it can run on page
  * loads, after care is logged, and after readings arrive, with no scheduler.
  *
- * The caller must already have verified that `plantId` belongs to the user
- * of `userClient`; reads go through that client (RLS), and only the outcome
- * writes use the service role, because users cannot write outcomes directly.
+ * The caller must already have verified access to `plantId`: either the user
+ * of `userClient` owns it (reads then go through RLS), or, for telemetry, the
+ * plant was taken from an authenticated device record and `userClient` is the
+ * service-role client. Outcome writes always use the service role, because
+ * users cannot write outcomes directly.
  */
 export async function refreshOutcomes(userClient: SupabaseClient, plantId: string, now = new Date()) {
   if (!isConfigured("supabaseAdmin")) return { inserted: 0, updated: 0 };
