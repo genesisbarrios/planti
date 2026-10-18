@@ -21,7 +21,7 @@ export function PlantForm({ action, plant, submitLabel }: Props) {
   return (
     <form action={formAction} className="space-y-8" noValidate>
       <fieldset className="grid gap-5 sm:grid-cols-2">
-        <legend className="mb-3 font-serif text-lg text-ink">Profile</legend>
+        <legend className="mb-3 font-display text-lg text-ink">Profile</legend>
         <Field label="Name" name="name" required error={errors.name} defaultValue={plant?.name} placeholder="e.g. Living room monstera" />
         <Field label="Species" name="species" error={errors.species} defaultValue={plant?.species} placeholder="e.g. Monstera deliciosa" hint="Leave blank if unknown." />
         <Field label="Location or room" name="location" error={errors.location} defaultValue={plant?.location} placeholder="e.g. Living room, east window" />
@@ -32,7 +32,7 @@ export function PlantForm({ action, plant, submitLabel }: Props) {
       </fieldset>
 
       <fieldset className="grid gap-5 sm:grid-cols-2">
-        <legend className="mb-1 font-serif text-lg text-ink">Your care preferences</legend>
+        <legend className="mb-1 font-display text-lg text-ink">Your care preferences</legend>
         <p className="-mt-2 text-sm text-ink-muted sm:col-span-2">
           What you already know works for this plant. Planti treats these as your guidance, not as verified species facts.
         </p>

@@ -20,6 +20,7 @@ import {
   type CareEventRow,
   type SensorReadingRow,
 } from "./mappers";
+import { refreshOutcomes } from "./outcomes";
 import { getOwnedPlant } from "./plants";
 
 /** An unchanged evidence state reuses the stored assessment for this long. */
@@ -46,6 +47,7 @@ export async function runAssessment(
 ): Promise<AssessmentResult> {
   const plant = await getOwnedPlant(userClient, plantId);
   if (!plant) return { kind: "not_found" };
+  await refreshOutcomes(userClient, plant.id, now).catch(() => undefined);
 
   const since = new Date(now.getTime() - HISTORY_DAYS * 86_400_000).toISOString();
   const [readingsRes, careRes, priorRes] = await Promise.all([

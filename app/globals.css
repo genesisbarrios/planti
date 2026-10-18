@@ -1,21 +1,30 @@
 @import "tailwindcss";
 
-/* Planti palette: warm stone paper, forest green actions, charcoal ink. */
+/* Planti brand palette (public/planti-logo/README.md), extended with UI neutrals. */
 @theme {
-  --color-paper: #f5f3ec;
-  --color-surface: #fcfbf7;
-  --color-sunken: #efece3;
-  --color-line: #e2ddd0;
-  --color-line-strong: #cdc6b4;
+  /* Brand */
+  --color-neon: #b6f23a;
+  --color-deep: #12261c;
+  --color-sage: #a9c4b4;
 
-  --color-ink: #22241f;
-  --color-ink-muted: #5f6157;
+  /* Surfaces: Ivory base with green-tinted neutrals */
+  --color-paper: #f8faf5;
+  --color-surface: #ffffff;
+  --color-sunken: #eef3ec;
+  --color-line: #dde6de;
+  --color-line-strong: #c4d1c7;
 
-  --color-forest: #1f3d2b;
-  --color-forest-hover: #2b523a;
-  --color-moss: #5f8050;
-  --color-moss-soft: #e4eadc;
+  /* Text */
+  --color-ink: #17221c;
+  --color-ink-muted: #56645b;
 
+  /* Actions and accents */
+  --color-forest: #1f4d3a;
+  --color-forest-hover: #286047;
+  --color-moss: #3b5c4b;
+  --color-moss-soft: #e4efe2;
+
+  /* Status */
   --color-amber: #8a5d0c;
   --color-amber-soft: #f5ead2;
   --color-clay: #9c4627;
@@ -26,8 +35,8 @@
 
 @theme inline {
   --font-sans: var(--font-geist-sans);
-  --font-serif: var(--font-fraunces);
-  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-outfit);
+  --font-mono: var(--font-plex-mono);
 }
 
 body {

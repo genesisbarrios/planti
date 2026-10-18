@@ -9,11 +9,12 @@ evidence-based care, and learns from the results over time.
 
 Built for the Nebius x NVIDIA Global AI Hackathon.
 
-> **Status: Phase 4 (Nemotron assessments).** Supabase with RLS, auth, plant
-> profiles, device pairing, the seeded simulator, deterministic analysis, Plant
-> Memory, and real NVIDIA Nemotron assessments through Nebius Token Factory work
-> end to end. Care logging with outcome persistence, Tavily research and
-> firmware come in later phases. Nothing below claims more than that.
+> **Status: Phase 5 (care + verification).** The full observe → analyze →
+> recommend → act → verify loop works end to end on Supabase, with real NVIDIA
+> Nemotron assessments through Nebius Token Factory. That covers care logging,
+> persisted intervention outcomes and a simulator fast-forward for live demos.
+> Tavily research and the T-Display S3 firmware come in later phases. Nothing
+> below claims more than that.
 
 ## How Planti keeps its claims honest
 
@@ -30,6 +31,14 @@ The model interprets evidence. Application code does the calculations and
 decides what actions are allowed. External research through Tavily is selective:
 it runs only when a deterministic policy finds a real unanswered question, and the
 evidence is saved and reused rather than searched again on every reading.
+
+## Brand
+
+The logo kit is in `public/planti-logo/` (see its README). The app uses the forest logo in the
+header, the leaf mark on small screens, the kit's favicon, Apple touch icon and 1200×630 link
+preview (Next.js file conventions in `app/`), the brand palette (Forest `#1F4D3A`, Neon
+`#B6F23A`, Deep, Ivory, Moss, Sage) as Tailwind tokens, Outfit for headings and IBM Plex Mono for
+data. Neon is used only as an accent; it is too light for text on Ivory.
 
 ## Requirements
 
@@ -136,6 +145,34 @@ model (reasoning on and off) and the comparison model. Results and reviewer note
 schema-valid in 0–2 of 5 runs. With strict JSON-schema output, all 15 runs were valid.
 Lightning with reasoning on was the most faithful to the evidence (~16–30 s), so it is the
 default. Reasoning off was faster but made unsupported claims.
+
+## Care and verification
+
+**Log watering** opens a dialog for watering, fertilizing, moving, repotting or other care
+(`POST /api/care-events`; time, amount and notes are validated, and care can't be logged in the future).
+
+Each watering immediately gets an `intervention_outcomes` record marked `pending_observation`,
+linked to the assessment that preceded it (within 48 hours). As readings arrive, a lightweight
+server-side refresh compares readings just before the watering with readings after a soak-in
+period, using the same deterministic code as the analysis. It runs on dashboard loads, after
+care is logged, after assessments and after simulator runs, with no scheduler and no
+blocking. The outcome becomes `moisture_increase_observed`, `no_measurable_change` or
+`inconclusive`, worded as an observed response, never a proven cause. Final outcomes are never
+recomputed, so the record of what was seen stays stable. Outcomes are written by the server;
+users can read them but not create or edit them.
+
+### Fast-forward (demo)
+
+Real soil takes hours to show a response, so the simulator panel has **Fast-forward**. For a
+plant with only simulated data, it moves the simulated readings, care events and assessments
+back by 3, 6 or 12 hours. It then adds that many hours of simulated readings that respond to your
+most recently logged watering, or to a simulated watering if you haven't logged one.
+Shifted records note how far they were moved. Plants with any measured device readings are
+refused, so real history is never rewritten.
+
+Demo loop: load *Moisture gradually declining* → **Run assessment** → **Log watering** →
+**Fast-forward 6 hours** → the outcome becomes *Moisture rose afterwards* and Plant Memory
+updates → **Run assessment** again and the model sees the response.
 
 ## Plant Memory
 

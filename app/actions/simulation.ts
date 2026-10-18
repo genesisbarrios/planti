@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireUser } from "@/lib/auth";
-import { clearSimulation, runScenario } from "@/lib/services/simulation";
+import { clearSimulation, fastForward, runScenario } from "@/lib/services/simulation";
 import { isScenarioId } from "@/lib/simulation/scenarios";
 import { createClient } from "@/lib/supabase/server";
 import { uuidSchema } from "@/lib/validation/plant";
@@ -50,4 +50,34 @@ export async function clearSimulationAction(_prev: SimulationState, formData: Fo
   const ok = await clearSimulation(await createClient(), plantId.data);
   revalidatePath("/");
   return ok ? { message: "Simulated data cleared. Measured readings were not touched." } : { error: "Could not clear simulated data." };
+}
+
+const fastForwardSchema = z.object({
+  plantId: uuidSchema,
+  hours: z.coerce.number().int().min(3).max(24),
+});
+
+export async function fastForwardAction(_prev: SimulationState, formData: FormData): Promise<SimulationState> {
+  const user = await requireUser();
+  const parsed = fastForwardSchema.safeParse({ plantId: formData.get("plantId"), hours: formData.get("hours") });
+  if (!parsed.success) return { error: "Choose between 3 and 24 hours." };
+
+  const result = await fastForward(await createClient(), user.id, parsed.data.plantId, parsed.data.hours, 20261018 + parsed.data.hours);
+  revalidatePath("/");
+  if (!result.ok) {
+    return {
+      error: {
+        disabled: "The simulator is turned off on this server.",
+        not_found: "Plant not found.",
+        has_device_data: "This plant has measured readings from a device. Fast-forward only works on simulated-only plants.",
+        no_simulation: "Load a scenario first.",
+        failed: "Could not fast-forward. Try again.",
+      }[result.error],
+    };
+  }
+  return {
+    message: `Simulated ${result.hours} hours: ${result.readingsAdded} new simulated readings responding to ${
+      result.respondedTo === "logged_watering" ? "your logged watering" : "a simulated watering"
+    }.`,
+  };
 }

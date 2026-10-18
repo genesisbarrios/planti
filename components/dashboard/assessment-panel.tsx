@@ -32,7 +32,7 @@ export function AssessmentPanel({ assessment, plantId }: { assessment: Assessmen
                 Based on simulated readings
               </p>
             ) : null}
-            <p className="font-serif text-[1.0625rem] leading-relaxed text-ink">{assessment.assessment}</p>
+            <p className="font-display text-[1.0625rem] leading-relaxed text-ink">{assessment.assessment}</p>
 
             {assessment.recommendedAction ? (
               <div className="rounded-lg border border-forest/20 bg-moss-soft/60 px-4 py-3">

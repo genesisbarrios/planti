@@ -10,7 +10,7 @@ export default async function NewPlantPage() {
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       <div>
-        <h1 className="font-serif text-3xl text-ink">Add a plant</h1>
+        <h1 className="font-display font-semibold text-3xl text-ink">Add a plant</h1>
         <p className="mt-1 text-sm text-ink-muted">Only the name is required. Everything else helps Planti give more specific advice.</p>
       </div>
       <div className="rounded-card border border-line bg-surface p-5 sm:p-8">

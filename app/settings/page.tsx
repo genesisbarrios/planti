@@ -25,7 +25,7 @@ export default async function SettingsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-serif text-3xl text-ink">Settings</h1>
+        <h1 className="font-display font-semibold text-3xl text-ink">Settings</h1>
         <p className="mt-1 text-sm text-ink-muted">Integration status. Only variable names are shown, never their values.</p>
       </div>
 

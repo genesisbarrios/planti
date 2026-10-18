@@ -204,6 +204,22 @@ describe("assessments and research RLS", () => {
     ).rejects.toThrow(/permission denied/);
   });
 
+  it("lets owners read outcomes but never write them", async () => {
+    await as(db, "service_role", null, () =>
+      rows("insert into intervention_outcomes (plant_id, outcome, explanation) values ($1, 'pending_observation', 'server')", [alicePlant]),
+    );
+    expect(await as(db, "authenticated", ALICE, () => rows("select id from intervention_outcomes"))).toHaveLength(1);
+    expect(await as(db, "authenticated", BOB, () => rows("select id from intervention_outcomes"))).toHaveLength(0);
+    await expect(
+      as(db, "authenticated", ALICE, () =>
+        rows("insert into intervention_outcomes (plant_id, outcome) values ($1, 'moisture_increase_observed')", [alicePlant]),
+      ),
+    ).rejects.toThrow(/permission denied/);
+    await expect(
+      as(db, "authenticated", ALICE, () => rows("update intervention_outcomes set outcome = 'moisture_increase_observed'")),
+    ).rejects.toThrow(/permission denied/);
+  });
+
   it("traverses ownership from research sources to the plant", async () => {
     expect(await as(db, "authenticated", ALICE, () => rows("select id from research_sources"))).toHaveLength(1);
     expect(await as(db, "authenticated", BOB, () => rows("select id from research_sources"))).toHaveLength(0);

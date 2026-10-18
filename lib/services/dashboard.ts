@@ -9,6 +9,7 @@ import { buildTimeline, type TimelineEntry } from "@/lib/memory/timeline";
 import { createClient } from "@/lib/supabase/server";
 import type { Assessment, CareEvent, Device, InterventionOutcome, Plant, SensorReading } from "@/lib/types/domain";
 import { latestReadingAtByDevice, listDevices } from "./devices";
+import { refreshOutcomes } from "./outcomes";
 import {
   ASSESSMENT_COLUMNS,
   CARE_EVENT_COLUMNS,
@@ -114,6 +115,12 @@ export async function loadDashboard(selectedPlantId?: string): Promise<Dashboard
   const plants = (plantsResult.data as PlantRow[]).map(toPlant);
   if (!plants.length) return { kind: "no_plants", view };
   const plant = plants.find((p) => p.id === selectedPlantId) ?? plants[0];
+
+  // Lightweight check that turns pending outcomes into results as readings
+  // arrive; cheap when nothing is pending. Never blocks the page on failure.
+  await refreshOutcomes(supabase, plant.id, now).catch((e) =>
+    console.error("loadDashboard: outcome refresh failed", e instanceof Error ? e.message : "unknown"),
+  );
 
   const windowStart = new Date(now.getTime() - HISTORY_WINDOW_HOURS * 3_600_000).toISOString();
   const [historyResult, latestResult, careResult, assessmentResult, outcomeResult, devices] = await Promise.all([

@@ -18,7 +18,7 @@ export function Panel({ title, eyebrow, actions, className = "", children }: Pan
           {eyebrow ? (
             <p className="text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-ink-muted">{eyebrow}</p>
           ) : null}
-          <h2 id={headingId} className="font-serif text-lg leading-tight text-ink">
+          <h2 id={headingId} className="font-display font-semibold text-lg leading-tight text-ink">
             {title}
           </h2>
         </div>

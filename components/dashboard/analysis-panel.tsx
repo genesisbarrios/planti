@@ -27,7 +27,7 @@ export function AnalysisPanel({ analysis }: { analysis: TrendSummary | null }) {
       ) : (
         <div className="space-y-4">
           <div className="flex items-baseline justify-between gap-3">
-            <p className="font-serif text-2xl text-ink">{TREND_LABEL[analysis.trend]}</p>
+            <p className="font-display text-2xl text-ink">{TREND_LABEL[analysis.trend]}</p>
             {analysis.estimatedChangePercentPerHour !== null ? (
               <p className="font-mono text-sm tabular-nums text-ink">
                 {analysis.estimatedChangePercentPerHour > 0 ? "+" : "−"}

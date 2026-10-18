@@ -1,7 +1,7 @@
 import type { DeviceConnection } from "@/lib/analysis/freshness";
 
 const STATES: Record<DeviceConnection | "none", { label: string; dot: string; live: boolean }> = {
-  online: { label: "Receiving readings", dot: "bg-moss", live: true },
+  online: { label: "Receiving readings", dot: "bg-neon ring-1 ring-forest/40", live: true },
   stale: { label: "Stopped reporting", dot: "bg-clay", live: false },
   never_reported: { label: "No readings yet", dot: "bg-line-strong", live: false },
   none: { label: "No device", dot: "bg-line-strong", live: false },

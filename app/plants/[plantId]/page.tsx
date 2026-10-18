@@ -39,7 +39,7 @@ export default async function PlantPage({ params }: PageProps<"/plants/[plantId]
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <Link href="/plants" className="text-sm text-ink-muted hover:text-ink">← Plants</Link>
-          <h1 className="mt-1 font-serif text-3xl text-ink">{plant.name}</h1>
+          <h1 className="mt-1 font-display font-semibold text-3xl text-ink">{plant.name}</h1>
         </div>
         <Link href={`/?plant=${plant.id}`} className="text-sm font-medium text-forest underline-offset-2 hover:underline">
           Open on dashboard

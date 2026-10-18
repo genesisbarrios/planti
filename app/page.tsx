@@ -9,7 +9,7 @@ import { ReadingStrip } from "@/components/dashboard/reading-strip";
 import { SimulatorPanel } from "@/components/dashboard/simulator-panel";
 import { StateNotice } from "@/components/dashboard/state-notice";
 import { MemoryPanel } from "@/components/memory/memory-panel";
-import { Button } from "@/components/ui/button";
+import { CareEventDialog } from "@/components/care/care-event-dialog";
 import { Panel } from "@/components/ui/panel";
 import { loadDashboard } from "@/lib/services/dashboard";
 
@@ -33,12 +33,7 @@ export default async function DashboardPage({ searchParams }: PageProps<"/">) {
             </Link>
           ) : null}
         </div>
-        <div className="flex flex-wrap gap-2">
-          {/* Wired to the care-event dialog in Phase 5. */}
-          <Button disabled title={plant ? "Care logging is not available yet" : "Add a plant first"}>
-            Log watering
-          </Button>
-        </div>
+        {plant ? <CareEventDialog plantId={plant.id} /> : null}
       </div>
 
       <ReadingStrip view={view} />

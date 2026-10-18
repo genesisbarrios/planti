@@ -33,7 +33,7 @@ export function MemoryPanel({ narrative, entries }: { narrative: string[]; entri
       ) : (
         <div className="space-y-6">
           {narrative.length ? (
-            <p className="font-serif text-[1.0625rem] leading-relaxed text-ink">{narrative.join(" ")}</p>
+            <p className="font-display text-[1.0625rem] leading-relaxed text-ink">{narrative.join(" ")}</p>
           ) : null}
 
           {entries.length ? (

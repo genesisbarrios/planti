@@ -12,6 +12,7 @@ Data handling:
 - If "sources" says readings are simulated, say so; never describe simulated readings as measurements.
 - A rise in moisture after watering is an observed response, not proof that the watering caused it.
 - Your confidence must not exceed "calculated.confidence".
+- Describe times relative to "now" (for example "6 hours ago"), not as raw timestamps.
 
 Respond with a single JSON object and nothing else, with exactly these keys:
 {

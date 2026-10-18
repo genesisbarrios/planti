@@ -1,4 +1,5 @@
 import { LogOut } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { signOut } from "@/app/login/actions";
 import { getCurrentUser } from "@/lib/auth";
@@ -10,9 +11,10 @@ export async function SiteHeader() {
   return (
     <header className="border-b border-line bg-paper/90 backdrop-blur supports-[backdrop-filter]:bg-paper/75">
       <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-10">
-        <Link href="/" className="flex items-center gap-2.5" aria-label="Planti home">
-          <Sprout />
-          <span className="hidden font-serif text-[1.375rem] font-medium tracking-tight text-forest sm:inline">planti</span>
+        <Link href="/" className="flex shrink-0 items-center" aria-label="Planti home">
+          {/* The SVGs carry their own padding; sizes are tuned to the visible mark. */}
+          <Image src="/planti-logo/logos/svg/planti-logo-forest.svg" alt="Planti" width={129} height={48} priority unoptimized className="hidden h-12 w-auto sm:block" />
+          <Image src="/planti-logo/mark-colors/planti-mark-forest.svg" alt="Planti" width={36} height={36} priority unoptimized className="h-9 w-9 sm:hidden" />
         </Link>
         <div className="flex min-w-0 items-center gap-1 sm:gap-4">
           <NavLinks />
@@ -38,15 +40,5 @@ export async function SiteHeader() {
         </div>
       </div>
     </header>
-  );
-}
-
-function Sprout() {
-  return (
-    <svg width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true" className="text-forest">
-      <path d="M13 23V12" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-      <path d="M13 13.5C13 9 10 6 4.5 6c0 5 3 7.5 8.5 7.5Z" fill="currentColor" opacity="0.88" />
-      <path d="M13 11c0-4.2 2.8-7.5 8.5-7.5 0 5-3.2 7.5-8.5 7.5Z" fill="var(--color-moss)" />
-    </svg>
   );
 }
