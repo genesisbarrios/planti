@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Planti
 
-## Getting Started
+Planti is a plant-care agent that keeps a memory of one plant's readings and care.
+It estimates when the plant may need attention, recommends a next step based on
+evidence, and then checks the readings that follow to see what actually happened.
 
-First, run the development server:
+Built for the Nebius x NVIDIA Global AI Hackathon.
+
+> **Status: Phase 1 (scaffold).** The dashboard shell, design system, Supabase
+> client wiring and freshness rules are in place. The database schema,
+> simulator, analysis engine, Nemotron assessments, Tavily research and
+> firmware arrive in later phases. Nothing below claims more than that.
+
+## How Planti keeps its claims honest
+
+Every value on screen is one of four kinds, and the UI labels which:
+
+| Kind | Produced by |
+| --- | --- |
+| Measured | The T-Display S3 and soil sensor (`source = device`) |
+| Simulated | The seeded simulator (`source = simulated`), always labeled |
+| Calculated | Deterministic TypeScript in `lib/analysis/` |
+| Interpreted | NVIDIA Nemotron via Nebius Token Factory, from the calculated evidence |
+
+The model interprets evidence. Application code does the calculations and
+decides what actions are allowed. External research through Tavily is selective:
+it runs only when a deterministic policy finds a real unanswered question, and the
+evidence is saved and reused rather than searched again on every reading.
+
+## Requirements
+
+- Node.js 20.9 or newer (`.nvmrc` pins 22.19.0)
+- npm
+
+## Run locally
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+nvm use
+npm install
+cp .env.example .env.local   # fill in what you have; see comments in the file
+npm run dev                  # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The app runs without any credentials. Missing integrations show a setup notice,
+and **Settings** lists which ones are configured (variable names only).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Command | What it does |
+| --- | --- |
+| `npm run dev` | Development server |
+| `npm run build` | Production build |
+| `npm run lint` | ESLint |
+| `npm run typecheck` | Generates Next.js route types, then `tsc --noEmit` |
+| `npm test` | Vitest unit tests |
+| `npm run check` | Lint, typecheck and tests |
 
-## Learn More
+## Project layout
 
-To learn more about Next.js, take a look at the following resources:
+```
+app/                 Routes (dashboard, plants, settings)
+components/          UI, grouped by feature (dashboard, charts, memory, shell, ui)
+lib/analysis/        Deterministic calculations (pure, unit tested)
+lib/services/        Server-side data loading
+lib/supabase/        Browser, server and proxy Supabase clients
+lib/env.ts           Server-side configuration and integration status
+proxy.ts             Refreshes the Supabase session (Next.js 16 replaces middleware with proxy)
+tests/               Vitest suites
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## License
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT. See [LICENSE](LICENSE).

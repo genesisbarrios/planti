@@ -1,26 +1,68 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Planti palette: warm stone paper, forest green actions, charcoal ink. */
+@theme {
+  --color-paper: #f5f3ec;
+  --color-surface: #fcfbf7;
+  --color-sunken: #efece3;
+  --color-line: #e2ddd0;
+  --color-line-strong: #cdc6b4;
+
+  --color-ink: #22241f;
+  --color-ink-muted: #5f6157;
+
+  --color-forest: #1f3d2b;
+  --color-forest-hover: #2b523a;
+  --color-moss: #5f8050;
+  --color-moss-soft: #e4eadc;
+
+  --color-amber: #8a5d0c;
+  --color-amber-soft: #f5ead2;
+  --color-clay: #9c4627;
+  --color-clay-soft: #f4e1d8;
+
+  --radius-card: 0.875rem;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
+  --font-serif: var(--font-fraunces);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+::selection {
+  background: var(--color-moss-soft);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-forest);
+  outline-offset: 2px;
+}
+
+/* Live-reading indicator: a soft ring that expands from the dot. */
+@keyframes planti-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.live-ring {
+  animation: planti-pulse 1.8s ease-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .live-ring {
+    animation: none;
+    opacity: 0;
+  }
 }
