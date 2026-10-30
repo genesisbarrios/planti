@@ -1,7 +1,8 @@
 // Planti firmware: reads the soil sensor once a minute, shows the reading on
-// the T-Display-S3 screen, and uploads it to Planti's /api/telemetry.
+// the T-Display-S3 (AMOLED or LCD) screen, and uploads it to Planti's /api/telemetry.
 //
-// Buttons: KEY (GPIO 14) takes a reading and queues it immediately.
+// Buttons: KEY (GPIO 21 on the AMOLED, 14 on the LCD board) takes a reading and
+// queues it immediately.
 
 #include <Arduino.h>
 
@@ -36,12 +37,14 @@ void takeReading() {
 
 void setup() {
   Serial.begin(115200);
-  // Required on battery or 5V-pin power; harmless on USB.
-  pinMode(PIN_POWER_ON, OUTPUT);
-  digitalWrite(PIN_POWER_ON, HIGH);
+  // LCD board: required on battery or 5V-pin power; harmless on USB.
+  if (PIN_POWER_ON >= 0) {
+    pinMode(PIN_POWER_ON, OUTPUT);
+    digitalWrite(PIN_POWER_ON, HIGH);
+  }
   pinMode(PIN_BUTTON_2, INPUT_PULLUP);
   delay(200);
-  Serial.printf("\nPlanti firmware %s\n", PLANTI_FIRMWARE_VERSION);
+  Serial.printf("\nPlanti firmware %s (%s)\n", PLANTI_FIRMWARE_VERSION, BOARD_NAME);
 
   display.begin();
 

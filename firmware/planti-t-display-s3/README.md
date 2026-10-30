@@ -1,10 +1,10 @@
-# Planti firmware: LILYGO T-Display-S3 + Adafruit STEMMA Soil Sensor
+# Planti firmware: LILYGO T-Display-S3 AMOLED (or T-Display-S3) + Adafruit STEMMA Soil Sensor
 
 Reads soil moisture and the sensor chip's temperature once a minute. It shows them on the
-T-Display-S3 screen and uploads them to Planti's `POST /api/telemetry` with a per-device
+board's screen and uploads them to Planti's `POST /api/telemetry` with a per-device
 credential.
 
-> **Status:** compiles for both environments (`device`, `bench`) with PlatformIO, and the server
+> **Status:** compiles for all four environments (`device`, `bench`, `tdisplay`, `tdisplay-bench`) with PlatformIO, and the server
 > path has been tested end to end with the exact JSON this firmware sends. **It has not yet been
 > tested with the physical board and sensor.** Treat sensor support as unverified until the
 > hardware test below passes.
@@ -13,26 +13,40 @@ credential.
 
 | Part | Notes |
 | --- | --- |
-| LILYGO T-Display-S3 (ESP32-S3, 1.9" 170×320 ST7789) | Touch and non-touch variants share these pins |
+| LILYGO T-Display-S3 AMOLED 1.91" (ESP32-S3, 240×536 RM67162 AMOLED over QSPI) | Default build (`device`, `bench`). [Pinout](https://raw.githubusercontent.com/Xinyuan-LilyGO/T-Display-S3-AMOLED/main/image/T-Display-S3-AMOLED.jpg) |
+| *or* LILYGO T-Display-S3 (ESP32-S3, 1.9" 170×320 ST7789 LCD) | `tdisplay`, `tdisplay-bench`. [Pinout](https://raw.githubusercontent.com/Xinyuan-LilyGO/T-Display-S3/main/image/T-DISPLAY-S3.jpg) |
 | Adafruit STEMMA Soil Sensor, product 4026 | seesaw chip, I2C address `0x36`, 3–5 V, 10K pull-ups to VIN |
-| Adafruit JST PH 4-pin to male header cable, product 3955 | |
+| Adafruit JST PH 4-pin to male header cable, product 3955 | Or, on the AMOLED, Adafruit 4424 (JST PH to STEMMA QT) to plug into the Qwiic port |
 
 ### Wiring
 
-Power the sensor from **3V3**, not 5V. Its I2C pull-ups go to VIN, and the ESP32-S3's pins are
+Power the sensor from **3V3**, not 5V/VBUS. Its I2C pull-ups go to VIN, and the ESP32-S3's pins are
 not 5 V tolerant.
+
+**T-Display-S3 AMOLED.** GPIO 17 and 18 drive the display on this board, so the sensor uses the
+STEMMA QT / Qwiic port (`G 3V3 43 44`) or the matching header pins:
+
+| Cable wire | Signal | AMOLED pin |
+| --- | --- | --- |
+| Black | GND | GND |
+| Red | V+ | 3V3 (labeled 3.3V) |
+| White | SDA | GPIO 43 |
+| Green | SCL | GPIO 44 |
+
+43/44 are the Qwiic port's data pins in Qwiic order (SDA, then SCL), from LILYGO's pinout image. If the
+sensor isn't found, swapping the two data wires is harmless. Serial logging uses native USB, not these pins.
+
+**T-Display-S3 (LCD).**
 
 | Cable wire | Signal | T-Display-S3 pin |
 | --- | --- | --- |
 | Black | GND | GND |
-| Red | V+ | 3V3 |
+| Red | V+ | 3V |
 | White | SDA | GPIO 18 |
 | Green | SCL | GPIO 17 |
 
-Sources: GPIO 17/18 are the I2C pins in LILYGO's `examples/factory/pin_config.h`. On the Touch
-variant the touch controller shares this bus at a different address. Wire colors are from
-Adafruit's product page for cable 3955. GPIO 43/44 (the small JST-SH connector) are the
-UART0 pins and are not used here.
+Sources: LILYGO's `examples/factory/pins_config.h` (AMOLED) and `pin_config.h` (LCD), and Adafruit's
+product page for cable 3955.
 
 ## Setup
 
@@ -47,18 +61,18 @@ UART0 pins and are not used here.
 4. **Flash and watch the log:**
    ```bash
    cd firmware/planti-t-display-s3
-   pio run -e device -t upload
+   pio run -e device -t upload        # AMOLED; use -e tdisplay for the LCD board
    pio device monitor
    ```
    If upload fails, hold **BOOT**, tap **RST**, release **BOOT**, and retry.
 
 Versions are pinned to what LILYGO tests: `espressif32@6.5.0` (arduino-esp32 2.0.14) and
-GFX Library for Arduino 1.4.2. The board definition in `boards/` comes from LILYGO's repository (MIT).
+GFX Library for Arduino 1.4.2, which includes the AMOLED's RM67162 driver. The board definition in `boards/` comes from LILYGO's repository (MIT).
 
 ## Bench mode (no sensor)
 
 ```bash
-pio run -e bench -t upload
+pio run -e bench -t upload           # AMOLED; use -e tdisplay-bench for the LCD board
 ```
 
 This shows deterministic values labeled **BENCH: SIMULATED** in amber on the screen, so you can
@@ -82,7 +96,7 @@ what a plant needs is not the sensor's job.
 
 ## Behavior
 
-- **Sensing:** one reading per minute, averaged over 5 samples. Press **KEY** (GPIO 14) to read now.
+- **Sensing:** one reading per minute, averaged over 5 samples. Press **KEY** (GPIO 21 on the AMOLED, 14 on the LCD board) to read now.
 - **Time:** NTP sync over Wi-Fi, readings timestamped in UTC. Until the clock syncs, the
   server stamps receipt time, and only the newest unsynced reading is kept.
 - **Offline:** up to 48 readings are buffered in RAM and uploaded in batches of 20 on reconnect.

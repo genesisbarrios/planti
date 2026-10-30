@@ -42,3 +42,6 @@ next-env.d.ts
 
 # supabase cli
 supabase/.temp/
+
+# firmware secrets (Wi-Fi password, device credential)
+**/include/secrets.h
