@@ -18,7 +18,7 @@ namespace planti {
 
 constexpr const char* BOARD_NAME = "T-Display-S3 AMOLED";
 constexpr int PIN_POWER_ON = -1;  // no peripheral power switch on this board
-constexpr int PIN_LCD_BL = -1;    // AMOLED: brightness is a panel command, no backlight pin
+constexpr int PIN_LCD_BL = 38;    // AMOLED: panel power enable (screen stays black while LOW)
 constexpr int PIN_BUTTON_1 = 0;   // BOOT button
 constexpr int PIN_BUTTON_2 = 21;  // KEY button
 
