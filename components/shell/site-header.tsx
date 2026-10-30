@@ -17,7 +17,7 @@ export async function SiteHeader() {
           <Image src="/planti-logo/mark-colors/planti-mark-forest.svg" alt="Planti" width={36} height={36} priority unoptimized className="h-9 w-9 sm:hidden" />
         </Link>
         <div className="flex min-w-0 items-center gap-1 sm:gap-4">
-          <NavLinks />
+          {user ? <NavLinks /> : null}
           {user ? (
             <form action={signOut} className="flex items-center gap-3 border-l border-line pl-1 sm:pl-4">
               <span className="hidden max-w-[16ch] truncate text-sm text-ink-muted md:inline" title={user.email ?? undefined}>

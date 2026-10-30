@@ -7,7 +7,8 @@ import { AuthForm } from "./auth-form";
 
 export const metadata: Metadata = { title: "Sign in" };
 
-export default async function LoginPage() {
+export default async function LoginPage({ searchParams }: PageProps<"/login">) {
+  const { mode } = await searchParams;
   if (!isConfigured("supabase")) {
     return (
       <div className="mx-auto max-w-md pt-10">
@@ -28,7 +29,7 @@ export default async function LoginPage() {
       <p className="mb-6 mt-2 text-sm leading-relaxed text-ink-muted">
         Your plants, their readings and their care history are private to your account.
       </p>
-      <AuthForm />
+      <AuthForm initialMode={mode === "sign-up" ? "sign-up" : "sign-in"} />
     </div>
   );
 }

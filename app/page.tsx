@@ -10,12 +10,14 @@ import { SimulatorPanel } from "@/components/dashboard/simulator-panel";
 import { StateNotice } from "@/components/dashboard/state-notice";
 import { MemoryPanel } from "@/components/memory/memory-panel";
 import { CareEventDialog } from "@/components/care/care-event-dialog";
+import { LandingPage } from "@/components/landing/landing-page";
 import { Panel } from "@/components/ui/panel";
 import { loadDashboard } from "@/lib/services/dashboard";
 
 export default async function DashboardPage({ searchParams }: PageProps<"/">) {
   const { plant: plantParam } = await searchParams;
   const state = await loadDashboard(typeof plantParam === "string" ? plantParam : undefined);
+  if (state.kind === "signed_out") return <LandingPage />;
   const { view } = state;
   const plant = view.plant;
 

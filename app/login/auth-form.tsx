@@ -6,8 +6,8 @@ import { signIn, signUp, type AuthFormState } from "./actions";
 const INPUT =
   "mt-1.5 block w-full rounded-lg border border-line-strong bg-surface px-3 py-2 text-sm text-ink placeholder:text-ink-muted/70 focus:border-forest focus:outline-none focus:ring-2 focus:ring-forest/20";
 
-export function AuthForm() {
-  const [mode, setMode] = useState<"sign-in" | "sign-up">("sign-in");
+export function AuthForm({ initialMode = "sign-in" }: { initialMode?: "sign-in" | "sign-up" }) {
+  const [mode, setMode] = useState<"sign-in" | "sign-up">(initialMode);
   const [signInState, signInAction, signingIn] = useActionState<AuthFormState, FormData>(signIn, {});
   const [signUpState, signUpAction, signingUp] = useActionState<AuthFormState, FormData>(signUp, {});
   const state = mode === "sign-in" ? signInState : signUpState;
